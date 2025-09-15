@@ -7,7 +7,7 @@ exports.up = async (client) => {
             max_team_size INT NOT NULL,
             min_team_size INT NOT NULL,
             is_active BOOLEAN DEFAULT TRUE,
-            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
         
         CREATE INDEX IF NOT EXISTS idx_sports_name ON sports(name);

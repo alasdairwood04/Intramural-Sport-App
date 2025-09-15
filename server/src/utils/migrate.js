@@ -4,6 +4,7 @@ const pool = require('../config/database');
 
 const MIGRATIONS_DIR = path.join(__dirname, '../../migrations');
 
+// Ensure the migrations table exists
 async function createMigrationsTable(client) {
   await client.query(`
     CREATE TABLE IF NOT EXISTS migrations (
