@@ -1,0 +1,3 @@
+
+-- @block
+SELECT * FROM migration;
