@@ -59,9 +59,50 @@ const isAdmin = (req, res, next) => {
   res.status(403).json({ error: 'This action is restricted to administrators only.' });
 };
 
+const isTeamFixtureCaptain = async (req, res, next) => {
+  try {
+    const fixtureId = req.params.id;
+    const userId = req.user.id;
+
+    // 1. Get the fixture details including home_team_id and away_team_id
+    const { rows: fixtures } = await pool.query(
+      `SELECT home_team_id, away_team_id FROM fixtures WHERE id = $1`,
+      [fixtureId]
+    );
+
+    if (fixtures.length === 0) {
+      return res.status(404).json({ error: 'Fixture not found' });
+    }
+
+    const fixture = fixtures[0];
+    const { home_team_id, away_team_id } = fixture;
+
+    // 2. Check if the user is the captain of either team
+    const { rows } = await pool.query(
+      `SELECT teams.id
+       FROM teams
+       WHERE (teams.id = $1 OR teams.id = $2) 
+       AND teams.captain_id = $3
+       LIMIT 1`,
+      [home_team_id, away_team_id, userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(403).json({ error: 'You must be a captain of one of the teams in this fixture to perform this action.' });
+    }
+
+    // Store the team ID in req for potential use in controller
+    req.captainTeamId = rows[0].id;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   isAuthenticated,
   isCaptain,
   isAdmin,
-  isTeamCaptainOrAdmin
+  isTeamCaptainOrAdmin,
+  isTeamFixtureCaptain
 };

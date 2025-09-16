@@ -3,7 +3,7 @@ const Season = require('../models/Season');
 // Get all seasons
 exports.getAllSeasons = async (req, res, next) => {
     try {
-        const { rows } = await Season.getAllSeasons();
+        const rows = await Season.getAllSeasons();
         res.status(200).json({ success: true, data: rows });
     } catch (error) {
         next(error);

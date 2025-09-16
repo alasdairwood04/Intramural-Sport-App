@@ -1,4 +1,5 @@
 const pool = require('../config/database');
+const { getAllTeams } = require('../controllers/teamController');
 
 const Team = {
     // Find a team by its ID
@@ -183,6 +184,13 @@ async updateTeam(teamId, updateData) {
     );
     
     return rows.length > 0;
+    },
+
+    async getAllTeams() {
+        const { rows } = await pool.query(
+            `SELECT * FROM teams`
+        );
+        return rows;
     },
 
 // ==== Team Join Requests ====

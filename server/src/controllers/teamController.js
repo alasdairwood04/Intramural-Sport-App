@@ -19,7 +19,7 @@ exports.createTeam = async (req, res, next) => {
 exports.getAllTeams = async (req, res, next) => {
     try {
         const userId = req.user.id;
-        const teams = await Team.getUserTeams({ userId });
+        const teams = await Team.getAllTeams({ userId });
         res.status(200).json({ success: true, data: teams });
     } catch (error) {
         next(error); // Pass errors to the global error handler

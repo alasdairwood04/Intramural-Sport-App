@@ -9,6 +9,10 @@ router.post('/', isAuthenticated, isCaptain, teamController.createTeam);
 // GET /api/teams/:id (get team details)
 router.get('/:teamId', isAuthenticated, teamController.getTeamById);
 
+// GET /api/teams (list all teams)
+router.get('/', isAuthenticated, teamController.getAllTeams);
+
+
 // PUT /api/teams/:id (update team)
 router.put("/:teamId", isAuthenticated, isTeamCaptainOrAdmin, teamController.updateTeam);
 
