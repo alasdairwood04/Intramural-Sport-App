@@ -1,5 +1,6 @@
 const Availability = require('../models/Availability');
 
+// Mark availability for a user for a specific fixture
 exports.markAvailability = async (req, res, next) => {
     try {
         const { fixture_id, is_available } = req.body;
@@ -11,6 +12,7 @@ exports.markAvailability = async (req, res, next) => {
     }
 };
 
+// Get availability for a specific fixture
 exports.getTeamAvailability = async (req, res, next) => {
     try {
         const fixtureId = req.params.id;
@@ -21,6 +23,7 @@ exports.getTeamAvailability = async (req, res, next) => {
     }
 };
 
+// Update availability by its ID
 exports.updateAvailability = async (req, res, next) => {
     try {
         const availabilityId = req.params.id;
