@@ -94,4 +94,21 @@ exports.removeTeamMember = async (req, res, next) => {
 
 
 
+// update team
+exports.updateTeam = async (req, res, next) => {
+    try {
+        const teamId = req.params.teamId; // Get teamId from route parameters
+        const updateData = req.body; // Get update data from request body
+        const updatedTeam = await Team.updateTeam(teamId, updateData);
+        if (!updatedTeam) {
+            return res.status(404).json({ success: false, message: 'Team not found' });
+        }
+        res.status(200).json({ success: true, data: updatedTeam });
+    } catch (error) {
+        next(error); // Pass errors to the global error handler
+    }
+}
+
+
+
 // delete a team (captain or admin only)

@@ -126,8 +126,48 @@ const Team = {
       ORDER BY t.created_at DESC
     `, [userId]);
     return result.rows;
+  },
+
+
+async updateTeam(teamId, updateData) {
+    // Define allowed fields to update
+    const allowedFields = ['name', 'description', 'logo_url', 'is_active', 'max_members'];
+    
+    const fields = [];
+    const values = [];
+    let index = 1;
+    
+    // Only process fields that are in the allowed list
+    for (const key in updateData) {
+      if (allowedFields.includes(key)) {
+        fields.push(`${key} = $${index}`);
+        values.push(updateData[key]);
+        index++;
+      }
+    }
+    
+    // If no valid fields to update, return the existing team
+    if (fields.length === 0) {
+      return await this.findById(teamId);
+    }
+    
+    values.push(teamId); // For the WHERE clause
+    const query = `UPDATE teams SET ${fields.join(', ')} WHERE id = $${index} RETURNING *;`;
+    const { rows } = await pool.query(query, values);
+    return rows[0];
+  },
+
+
+
+  // Delete a team by its ID
+  async deleteTeam(teamId) {
+    const { rowCount } = await pool.query(
+      `DELETE FROM teams WHERE id = $1 RETURNING *;`,
+      [teamId]
+    );
+    return rowCount > 0;
   }
-            
 };
+
 
 module.exports = Team;
