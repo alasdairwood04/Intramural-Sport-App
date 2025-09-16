@@ -41,12 +41,14 @@ app.use(passport.session());
 // --- Routes ---
 const authRoutes = require('./routes/authRoutes');
 const teamRoutes = require('./routes/teamRoutes'); 
-
+const sportRoutes = require('./routes/sportRoutes');
+const seasonRoutes = require('./routes/seasonRoutes');
 
 // -- Mount routes ---
 app.use('/api/auth', authRoutes);
-app.use('/api/teams', teamRoutes); 
-
+app.use('/api/teams', teamRoutes);
+app.use('/api/sports', sportRoutes);
+app.use('/api/seasons', seasonRoutes);
 
 // A simple protected route to test authentication
 const { isAuthenticated } = require('./middleware/auth'); // Import your middleware
