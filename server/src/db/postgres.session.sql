@@ -13,6 +13,9 @@ SELECT * FROM seasons;
 
 
 -- @block
+SELECT * FROM join_requests;
+
+-- @block
 -- update test.user@example.com to role captain
 UPDATE users SET role = 'captain' WHERE email = 'test.user@example.com';
 

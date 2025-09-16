@@ -18,4 +18,18 @@ router.post('/:teamId/members', isAuthenticated, isTeamCaptainOrAdmin, teamContr
 // DELETE /api/teams/:id/members (remove player)
 router.delete('/:teamId/:userId', isAuthenticated, isTeamCaptainOrAdmin, teamController.removeTeamMember);
 
+
+// Player requests to join a team
+router.post('/:teamId/requests', isAuthenticated, teamController.requestToJoinTeam);
+
+// Captain/Admin views pending requests
+router.get('/:teamId/requests/view', isAuthenticated, isTeamCaptainOrAdmin, teamController.viewJoinRequests);
+
+// Captain/Admin approves a request
+router.post('/:teamId/requests/:requestId/approve', isAuthenticated, isTeamCaptainOrAdmin, teamController.approveJoinRequest);
+
+// Captain/Admin rejects a request
+router.post('/:teamId/requests/:requestId/reject', isAuthenticated, isTeamCaptainOrAdmin, teamController.rejectJoinRequest);
+
+
 module.exports = router;

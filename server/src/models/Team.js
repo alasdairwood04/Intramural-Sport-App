@@ -170,20 +170,86 @@ async updateTeam(teamId, updateData) {
 
   // Add this method to your Team object
 
-async isUserInAnotherTeamSameSeason(userId, seasonId, excludeTeamId) {
-  const { rows } = await pool.query(
-    `SELECT t.id 
-     FROM teams t
-     JOIN team_members tm ON t.id = tm.team_id
-     WHERE tm.user_id = $1
-     AND t.season_id = $2
-     AND t.id != $3
-     LIMIT 1`,
-    [userId, seasonId, excludeTeamId]
-  );
-  
-  return rows.length > 0;
-}
+    async isUserInAnotherTeamSameSeason(userId, seasonId, excludeTeamId) {
+    const { rows } = await pool.query(
+        `SELECT t.id 
+        FROM teams t
+        JOIN team_members tm ON t.id = tm.team_id
+        WHERE tm.user_id = $1
+        AND t.season_id = $2
+        AND t.id != $3
+        LIMIT 1`,
+        [userId, seasonId, excludeTeamId]
+    );
+    
+    return rows.length > 0;
+    },
+
+// ==== Team Join Requests ====
+
+    // Create a request for a user to join a team
+    async createJoinRequest(teamId, userId) {
+        const { rows } = await pool.query(
+        `INSERT INTO join_requests (team_id, user_id) VALUES ($1, $2) RETURNING *;`,
+        [teamId, userId]
+        );
+        return rows[0];
+    },
+
+    // Get all pending join requests for a specific team
+    async getTeamJoinRequests(teamId) {
+        const { rows } = await pool.query(
+        `SELECT jr.id, jr.status, u.id as user_id, u.first_name, u.last_name, u.email
+        FROM join_requests jr
+        JOIN users u ON jr.user_id = u.id
+        WHERE jr.team_id = $1 AND jr.status = 'pending'`,
+        [teamId]
+        );
+        return rows;
+    },
+
+    // Approve a join request and add the user to the team (using a transaction)
+    async approveJoinRequest(requestId) {
+        const client = await pool.connect();
+        try {
+        await client.query('BEGIN');
+
+        // 1. Get the user_id and team_id from the request
+        const requestRes = await client.query('SELECT user_id, team_id FROM join_requests WHERE id = $1', [requestId]);
+        if (requestRes.rows.length === 0) {
+            throw new Error('Join request not found');
+        }
+        const { user_id, team_id } = requestRes.rows[0];
+
+        // 2. Add the user to the team_members table
+        await client.query('INSERT INTO team_members (team_id, user_id, role) VALUES ($1, $2, $3)', [team_id, user_id, 'player']);
+
+        // 3. Update the request status to 'approved'
+        const { rows } = await client.query(
+            `UPDATE join_requests SET status = 'approved', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *;`,
+            [requestId]
+        );
+        
+        await client.query('COMMIT');
+        return rows[0];
+
+        } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+        } finally {
+        client.release();
+        }
+    },
+
+    // Reject a join request
+    async rejectJoinRequest(requestId) {
+        const { rows } = await pool.query(
+        `UPDATE join_requests SET status = 'rejected', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *;`,
+        [requestId]
+        );
+        return rows[0];
+    }
+
 };
 
 

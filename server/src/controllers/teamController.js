@@ -123,6 +123,62 @@ exports.updateTeam = async (req, res, next) => {
     }
 };
 
+// ==== Team Join Requests ====
 
+// Player requests to join a team
+exports.requestToJoinTeam = async (req, res, next) => {
+    try {
+        const teamId = req.params.teamId;
+        const userId = req.user.id; // Logged-in user
+
+        // Optional: Check if user is already on the team
+        const isMember = await Team.isUserMember(teamId, userId);
+        if (isMember) {
+            return res.status(400).json({ success: false, message: 'You are already a member of this team.' });
+        }
+
+        const request = await Team.createJoinRequest(teamId, userId);
+        res.status(201).json({ success: true, message: 'Your request to join the team has been sent.', data: request });
+    } catch (error) {
+        // Handle unique constraint violation (user already requested)
+        if (error.code === '23505') {
+            return res.status(400).json({ success: false, message: 'You have already sent a request to join this team.' });
+        }
+        next(error);
+    }
+};
+
+// Captain/Admin views all pending requests for their team
+exports.viewJoinRequests = async (req, res, next) => {
+    try {
+        const teamId = req.params.teamId;
+        const requests = await Team.getTeamJoinRequests(teamId);
+        res.status(200).json({ success: true, data: requests });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Captain/Admin approves a join request
+exports.approveJoinRequest = async (req, res, next) => {
+    try {
+        const { requestId } = req.params;
+        const updatedRequest = await Team.approveJoinRequest(requestId);
+        res.status(200).json({ success: true, message: 'Join request approved. User added to the team.', data: updatedRequest });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Captain/Admin rejects a join request
+exports.rejectJoinRequest = async (req, res, next) => {
+    try {
+        const { requestId } = req.params;
+        const updatedRequest = await Team.rejectJoinRequest(requestId);
+        res.status(200).json({ success: true, message: 'Join request rejected.', data: updatedRequest });
+    } catch (error) {
+        next(error);
+    }
+};
 
 // delete a team (captain or admin only)
