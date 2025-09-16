@@ -12,6 +12,7 @@ require('./config/passport')(passport);
 
 // --- Middleware --- 
 app.use(cors()); // Enable CORS for all routes
+
 // body parsing middleware
 app.use(express.json({ limit: '10mb' })); // To handle JSON payloads
 app.use(express.urlencoded({ extended: true })); // To handle URL-encoded payloads
