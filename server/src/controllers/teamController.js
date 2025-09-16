@@ -12,7 +12,7 @@ exports.createTeam = async (req, res, next) => {
     } catch (error) {
         next(error); // Pass errors to the global error handler
     }
-}
+};
 
 
 // Get all teams for the currently logged-in user
@@ -35,7 +35,7 @@ exports.getTeamById = async (req, res, next) => {
         if (!team) {
             return res.status(404).json({ success: false, message: 'Team not found' });
         }
-        const members = await Team.getTeamMembers(teamId);
+        const members = await Team.getMembers(teamId);
         res.status(200).json({ success: true, data: { ...team, members } }); // Include members in the response
     } catch (error) {
         next(error); // Pass errors to the global error handler
@@ -55,20 +55,34 @@ exports.addTeamMember = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        // check if user is already a member of the team
+        // 2. Check if user is already a member of the team
         const isMember = await Team.isUserMember(teamId, user.id);
         if (isMember) {
             return res.status(400).json({ success: false, message: 'User is already a member of this team' });
         }
 
-        // 2. Add the user to the team_members table
+        // 3. Get the current team's season
+        const team = await Team.findById(teamId);
+        if (!team) {
+            return res.status(404).json({ success: false, message: 'Team not found' });
+        }
+
+        // 4. Check if user is in another team in the same season
+        const isInOtherTeamSameSeason = await Team.isUserInAnotherTeamSameSeason(user.id, team.season_id, teamId);
+        if (isInOtherTeamSameSeason) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'User is already a member of another team in this season' 
+            });
+        }
+
+        // 5. Add the user to the team_members table
         const newMember = await Team.addMember(teamId, user.id);
         res.status(201).json({ success: true, data: newMember });
     } catch (error) {
         next(error); // Pass errors to the global error handler
     }
 };
-
 
 // remove a member from a team (captain only)
 exports.removeTeamMember = async (req, res, next) => {
@@ -107,7 +121,7 @@ exports.updateTeam = async (req, res, next) => {
     } catch (error) {
         next(error); // Pass errors to the global error handler
     }
-}
+};
 
 
 

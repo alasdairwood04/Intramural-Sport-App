@@ -16,4 +16,6 @@ router.put("/:teamId", isAuthenticated, isTeamCaptainOrAdmin, teamController.upd
 router.post('/:teamId/members', isAuthenticated, isTeamCaptainOrAdmin, teamController.addTeamMember);
 
 // DELETE /api/teams/:id/members (remove player)
-router.delete('/:teamId/members', isAuthenticated, isTeamCaptainOrAdmin, teamController.removeTeamMember);
+router.delete('/:teamId/:userId', isAuthenticated, isTeamCaptainOrAdmin, teamController.removeTeamMember);
+
+module.exports = router;

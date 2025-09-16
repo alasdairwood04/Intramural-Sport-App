@@ -43,8 +43,10 @@ const authRoutes = require('./routes/authRoutes');
 const teamRoutes = require('./routes/teamRoutes'); 
 
 
+// -- Mount routes ---
 app.use('/api/auth', authRoutes);
 app.use('/api/teams', teamRoutes); 
+
 
 // A simple protected route to test authentication
 const { isAuthenticated } = require('./middleware/auth'); // Import your middleware

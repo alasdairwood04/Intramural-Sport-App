@@ -131,7 +131,7 @@ const Team = {
 
 async updateTeam(teamId, updateData) {
     // Define allowed fields to update
-    const allowedFields = ['name', 'description', 'logo_url', 'is_active', 'max_members'];
+    const allowedFields = ['name', 'description', 'logo_url', 'is_active'];
     
     const fields = [];
     const values = [];
@@ -166,7 +166,24 @@ async updateTeam(teamId, updateData) {
       [teamId]
     );
     return rowCount > 0;
-  }
+  },
+
+  // Add this method to your Team object
+
+async isUserInAnotherTeamSameSeason(userId, seasonId, excludeTeamId) {
+  const { rows } = await pool.query(
+    `SELECT t.id 
+     FROM teams t
+     JOIN team_members tm ON t.id = tm.team_id
+     WHERE tm.user_id = $1
+     AND t.season_id = $2
+     AND t.id != $3
+     LIMIT 1`,
+    [userId, seasonId, excludeTeamId]
+  );
+  
+  return rows.length > 0;
+}
 };
 
 
