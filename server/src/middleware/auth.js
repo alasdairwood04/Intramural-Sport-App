@@ -1,3 +1,4 @@
+const pool = require('../config/database');
 const Team = require('../models/Team'); // Import the Team model
 
 /**
@@ -59,41 +60,44 @@ const isAdmin = (req, res, next) => {
   res.status(403).json({ error: 'This action is restricted to administrators only.' });
 };
 
-const isTeamFixtureCaptain = async (req, res, next) => {
+const isFixtureCaptainOrAdmin = async (req, res, next) => {
   try {
-    const fixtureId = req.params.id;
+    // Allow admin users to proceed immediately
+    if (req.user.role === 'admin') {
+      return next();
+    }
+
+    const fixtureId = req.params.id; // Assumes fixture ID is in req.params.id
     const userId = req.user.id;
 
-    // 1. Get the fixture details including home_team_id and away_team_id
-    const { rows: fixtures } = await pool.query(
+    // 1. Get the fixture details
+    const fixtureResult = await pool.query(
       `SELECT home_team_id, away_team_id FROM fixtures WHERE id = $1`,
       [fixtureId]
     );
 
-    if (fixtures.length === 0) {
+    if (fixtureResult.rows.length === 0) {
       return res.status(404).json({ error: 'Fixture not found' });
     }
 
-    const fixture = fixtures[0];
-    const { home_team_id, away_team_id } = fixture;
+    const { home_team_id, away_team_id } = fixtureResult.rows[0];
 
-    // 2. Check if the user is the captain of either team
-    const { rows } = await pool.query(
-      `SELECT teams.id
-       FROM teams
-       WHERE (teams.id = $1 OR teams.id = $2) 
-       AND teams.captain_id = $3
+    // 2. Check if the user is the captain of either team in the fixture
+    const captainResult = await pool.query(
+      `SELECT id FROM teams
+       WHERE (id = $1 OR id = $2) AND captain_id = $3
        LIMIT 1`,
       [home_team_id, away_team_id, userId]
     );
 
-    if (rows.length === 0) {
-      return res.status(403).json({ error: 'You must be a captain of one of the teams in this fixture to perform this action.' });
+    if (captainResult.rows.length === 0) {
+      return res.status(403).json({ error: 'You must be an admin or a captain of a team in this fixture to perform this action.' });
     }
 
-    // Store the team ID in req for potential use in controller
-    req.captainTeamId = rows[0].id;
+    // Optional: Pass the captain's team ID to the next controller
+    req.captainTeamId = captainResult.rows[0].id;
     next();
+
   } catch (error) {
     next(error);
   }
@@ -104,5 +108,5 @@ module.exports = {
   isCaptain,
   isAdmin,
   isTeamCaptainOrAdmin,
-  isTeamFixtureCaptain
+  isFixtureCaptainOrAdmin
 };
