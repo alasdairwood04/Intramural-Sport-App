@@ -4,7 +4,7 @@ const sportController = require('../controllers/sportController');
 const { isAuthenticated, isAdmin } = require('../middleware/auth');
 
 // public routes
-router.gett('/', sportController.getAllSports);
+router.get('/', sportController.getAllSports);
 router.get('/:sportId', sportController.getSportById);
 
 // admin-only routes

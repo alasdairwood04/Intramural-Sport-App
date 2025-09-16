@@ -5,7 +5,7 @@ const { isAuthenticated, isAdmin } = require('../middleware/auth');
 
 // Public routes
 router.get('/', seasonController.getAllSeasons);
-router.get('/active', seasonController.getActiveSeasons);
+router.get('/active', seasonController.findActiveSeasons);
 router.get('/:seasonId', seasonController.getSeasonById);
 
 // Admin-only routes

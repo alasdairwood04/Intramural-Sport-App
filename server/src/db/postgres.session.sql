@@ -25,6 +25,11 @@ UPDATE users SET role = 'captain' WHERE email = 'test.user.LawRugby@example.com'
 
 
 -- @block
+-- update AdminUser@example.com to role admin
+UPDATE users SET role = 'admin' WHERE email = 'AdminUser@example.com';
+
+
+-- @block
 -- inserting a sport
 INSERT INTO sports (name, description, max_team_size, min_team_size)
 VALUES ('Rugby', 'Intramural Rugby', 100, 15);
