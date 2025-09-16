@@ -1,3 +1,5 @@
+const Team = require('../models/Team'); // Import the Team model
+
 /**
  * Checks if a user is authenticated.
  * Passport.js adds the `isAuthenticated()` method to the request object after a successful login.
@@ -10,6 +12,26 @@ const isAuthenticated = (req, res, next) => {
   }
   res.status(401).json({ error: 'You are not authorized to access this resource.' });
 };
+
+
+const isTeamCaptainOrAdmin = async (req, res, next) => {
+  const teamId = req.params.teamId; // Assuming teamId is passed as a route parameter
+  const userId = req.user.id; // The authenticated user's ID
+  const userRole = req.user.role; // The authenticated user's role
+
+  // If the user is an admin, they have access to all teams
+  if (userRole === 'admin') {
+    return next();
+  }
+
+  // Check if the user is the captain of the team
+  const isCaptain = await Team.isUserCaptain(teamId, userId);
+  if (!isCaptain) {
+    return res.status(403).json({ error: 'You do not have permission to manage this team.' });
+  }
+  next();
+};
+
 
 /**
  * Checks if the authenticated user has the role of 'captain' or 'admin'.
@@ -41,4 +63,5 @@ module.exports = {
   isAuthenticated,
   isCaptain,
   isAdmin,
+  isTeamCaptainOrAdmin
 };
