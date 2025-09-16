@@ -43,12 +43,26 @@ const authRoutes = require('./routes/authRoutes');
 const teamRoutes = require('./routes/teamRoutes'); 
 const sportRoutes = require('./routes/sportRoutes');
 const seasonRoutes = require('./routes/seasonRoutes');
+const fixtureRoutes = require('./routes/fixtureRoutes');
+// --- Routers with multiple base paths ---
+const notificationRoutes = require('./routes/notificationRoutes');
+const availabilityRoutes = require('./routes/availabilityRoutes');
+const leagueRoutes = require('./routes/leagueRoutes');
+const teamsheetRoutes = require('./routes/teamsheetRoutes');
+
 
 // -- Mount routes ---
 app.use('/api/auth', authRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/sports', sportRoutes);
 app.use('/api/seasons', seasonRoutes);
+app.use('/api/fixtures', fixtureRoutes);
+// --- Correctly mount routers with multiple base paths ---
+app.use('/api', availabilityRoutes);
+app.use('/api', teamsheetRoutes);
+app.use('/api', leagueRoutes);
+app.use('/api', notificationRoutes);
+
 
 // A simple protected route to test authentication
 const { isAuthenticated } = require('./middleware/auth'); // Import your middleware
