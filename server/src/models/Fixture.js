@@ -23,6 +23,15 @@ const Fixture = {
         return rows[0];
     },
 
+    async confirmFixture(id) {
+        const { rows } = await pool.query(
+            `UPDATE fixtures SET status = 'confirmed', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *;`,
+            [id]
+        );
+        return rows[0];
+    },
+
+
     async submitResult(id, resultData) {
         const { homeTeamScore, awayTeamScore } = resultData;
         const { rows } = await pool.query(
