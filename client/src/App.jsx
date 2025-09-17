@@ -3,9 +3,9 @@ import './styles/index.css'
 function App() {
 
   return (
-    <>
-      <h1 className="text-4xl font-bold bg-amber-400 p-4 px-12 text-center">Intramural Sport App</h1>
-    </>
+    <div className="min-h-screen">
+      <h1 className="text-4xl font-bold bg-gray-50 p-4 px-12 text-center shadow-md font-sans">Intramural Sport App</h1>
+    </div>
   )
 }
 
