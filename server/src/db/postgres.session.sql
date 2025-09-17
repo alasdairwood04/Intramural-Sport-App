@@ -76,3 +76,12 @@ VALUES
     ('Hockey Team 3', '83c6ca07-4173-401a-9897-67c882111cf9', '30df96ac-563a-4485-a723-e736f97e2417', 'ff1e117e-5382-4723-afeb-0806570a7926'),
     ('Hockey Team 4', '83c6ca07-4173-401a-9897-67c882111cf9', '30df96ac-563a-4485-a723-e736f97e2417', 'fdc70e58-84fe-4a90-9c69-ff3ba9c64eaf'),
     ('Hockey Team 5', '83c6ca07-4173-401a-9897-67c882111cf9', '30df96ac-563a-4485-a723-e736f97e2417', '26fdb70c-5c1e-4a4a-81fa-f6bc00629006');
+
+
+-- @block
+-- get all from teamsheets
+SELECT * FROM teamsheets;
+
+-- @block
+-- get all from teamsheet_players
+SELECT * FROM teamsheet_players;
