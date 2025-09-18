@@ -36,7 +36,7 @@ const RegisterForm = () => {
 
     return ( // to register in user needs to put in email, password, firstName, lastName, studentId
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 <Input label="Email" name="email" register={register} errors={errors} required />
                 <Input label="Password" name="password" type="password" register={register} errors={errors} required />
                 <Input label="First Name" name="firstName" register={register} errors={errors} required />
@@ -50,6 +50,7 @@ const RegisterForm = () => {
                 {isSubmitting ? 'Registering...' : 'Create Account'}
             </Button>
         </div>
+        {serverError && <p className="text-red-500 text-sm">{serverError}</p>}
         </form>
   );
 };
