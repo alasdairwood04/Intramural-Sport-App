@@ -107,3 +107,30 @@ SELECT t.*, s.name as sport_name, se.name as season_name,
       JOIN team_members tm ON t.id = tm.team_id
       WHERE tm.user_id = '1a303e0c-3890-40d8-ba05-41997527f59c' AND tm.is_active = true
       ORDER BY t.created_at DESC
+
+-- @block
+SELECT
+t.id,
+t.name,
+COUNT(f.id) AS matches_played,
+SUM(CASE WHEN f.home_team_id = t.id AND f.home_team_score > f.away_team_score THEN 1 ELSE 0 END) +
+SUM(CASE WHEN f.away_team_id = t.id AND f.away_team_score > f.home_team_score THEN 1 ELSE 0 END) AS wins,
+SUM(CASE WHEN f.home_team_id = t.id AND f.home_team_score < f.away_team_score THEN 1 ELSE 0 END) +
+SUM(CASE WHEN f.away_team_id = t.id AND f.away_team_score < f.home_team_score THEN 1 ELSE 0 END) AS losses,
+SUM(CASE WHEN f.home_team_score = f.away_team_score THEN 1 ELSE 0 END) AS draws,
+SUM(CASE WHEN f.home_team_id = t.id THEN f.home_team_score ELSE f.away_team_score END) AS goals_for,
+SUM(CASE WHEN f.home_team_id = t.id THEN f.away_team_score ELSE f.home_team_score END) AS goals_against
+FROM teams t
+LEFT JOIN fixtures f ON (t.id = f.home_team_id OR t.id = f.away_team_id) AND f.status = 'completed'
+WHERE t.season_id = '30df96ac-563a-4485-a723-e736f97e2417' AND t.sport_id = '83c6ca07-4173-401a-9897-67c882111cf9'
+GROUP BY t.id
+ORDER BY wins DESC, (SUM(CASE WHEN f.home_team_id = t.id THEN f.home_team_score ELSE f.away_team_score END) - SUM(CASE WHEN f.home_team_id = t.id THEN f.away_team_score ELSE f.home_team_score END)) DESC;
+
+
+-- @block
+-- create 3 users who are players (not captains)
+INSERT INTO users (email, password_hash, first_name, last_name, student_id, role)
+VALUES
+    ('historyRugby1@example.com', 'password123', 'History1', 'Rugby1', 'student1', 'player'),
+    ('historyRugby2@example.com', 'password123', 'History2', 'Rugby2', 'student2', 'player'),
+    ('historyRugby3@example.com', 'password123', 'History3', 'Rugby3', 'student3', 'player');

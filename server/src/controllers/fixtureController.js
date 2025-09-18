@@ -43,3 +43,13 @@ exports.submitResult = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.getFixturesByTeam = async (req, res, next) => {
+    try {
+        const teamId = req.params.teamId;
+        const fixtures = await Fixture.findByTeamId(teamId);
+        res.status(200).json({ success: true, data: fixtures });
+    } catch (error) {
+        next(error);
+    }
+};

@@ -42,6 +42,15 @@ const Fixture = {
             [homeTeamScore, awayTeamScore, id]
         );
         return rows[0];
+    },
+    async findByTeamId(teamId) {
+        const { rows } = await pool.query(
+            `SELECT * FROM fixtures 
+             WHERE home_team_id = $1 OR away_team_id = $1
+             ORDER BY fixture_date DESC;`,
+            [teamId]
+        );
+        return rows;
     }
 };
 
