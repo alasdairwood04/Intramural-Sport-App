@@ -2,6 +2,8 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Input from '../../components/common/Input';
+import Button from '../../components/common/Button';
 
 const RegisterForm = () => {
   const { register: registerUser } = useAuth(); // get register function from context and rename to avoid conflict
@@ -16,7 +18,15 @@ const RegisterForm = () => {
     const onSubmit = async (data) => {
         setServerError('');
         try {
-            await registerUser(data); // call the register function from context
+            // backend expects email, password, firstName, lastName, studentId
+            const userData = {
+                email: data.email,
+                password: data.password,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                studentId: data.studentId,
+            }
+            await registerUser(userData); // call the register function from context
             navigate('/dashboard'); // navigate to dashboard on success
         } catch (error) {
             setServerError('Registration failed. Please try again.');
@@ -26,61 +36,20 @@ const RegisterForm = () => {
 
     return ( // to register in user needs to put in email, password, firstName, lastName, studentId
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Email Field */}
-        <div>
-            <label htmlFor="email">Email</label>
-            <input
-            id="email"
-            type="email"
-            {...register('email', { required: 'Email is required' })}
-            />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Email" name="email" register={register} errors={errors} required />
+                <Input label="Password" name="password" type="password" register={register} errors={errors} required />
+                <Input label="First Name" name="firstName" register={register} errors={errors} required />
+                <Input label="Last Name" name="lastName" register={register} errors={errors} required />
+                <Input label="Student ID" name="studentId" register={register} errors={errors} required />
+            </div>
+
+
+        <div className="pt-2">
+            <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Registering...' : 'Create Account'}
+            </Button>
         </div>
-        {/* Password Field */}
-        <div>
-            <label htmlFor="password">Password</label>
-            <input
-            id="password"
-            type="password"
-            {...register('password', { required: 'Password is required' })}
-            />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-        </div>
-            {/* First Name Field */}
-        <div>
-            <label htmlFor="firstName">First Name</label>
-            <input
-                id="firstName"
-                type="text"
-                {...register('firstName', { required: 'First Name is required' })}
-            />
-            {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
-        </div>
-            {/* Last Name Field */}
-        <div>
-            <label htmlFor="lastName">Last Name</label>
-                <input
-                    id="lastName"
-                    type="text"
-                    {...register('lastName', { required: 'Last Name is required' })}
-                />
-            {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
-        </div>
-            {/* Student ID Field */}
-        <div>
-            <label htmlFor="studentId">Student ID</label>
-            <input
-                id="studentId"
-                type="text"
-                {...register('studentId', { required: 'Student ID is required' })}
-            />
-            {errors.studentId && <p className="text-red-500 text-sm">{errors.studentId.message}</p>}
-        </div>
-        
-        <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Registering...' : 'Create Account'}
-        </button>
-        {serverError && <p className="text-red-500 text-sm">{serverError}</p>}
         </form>
   );
 };
