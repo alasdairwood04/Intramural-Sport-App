@@ -114,7 +114,8 @@ const DashboardPage = () => {
                 )}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {seasons.map(season => (
-                        <Card key={season.id} className="hover:shadow-lg transition-shadow">
+                        <Link to={`/seasons/${season.id}`} key={season.id}>
+                            <Card className="hover:shadow-lg transition-shadow hover:border-blue-500 border border-transparent">
                             <h3 className="font-bold text-lg">{season.name}</h3>
                             <p className="text-sm text-gray-600">Start: {new Date(season.start_date).toLocaleDateString()}</p>
                             <p className="text-sm text-gray-600">End: {new Date(season.end_date).toLocaleDateString()}</p>
@@ -123,7 +124,8 @@ const DashboardPage = () => {
                             } text-xs font-medium px-2.5 py-0.5 rounded-full`}>
                                 {season.is_active ? 'Active' : 'Inactive'}
                             </span>
-                        </Card>
+                            </Card>
+                        </Link>
                     ))}
                 </div>
             </Card>
@@ -132,6 +134,7 @@ const DashboardPage = () => {
                 <CreateTeamForm onClose={handleModalClose} />
             </Modal>
         </div>
-    );};
+    );
+};
 
 export default DashboardPage;

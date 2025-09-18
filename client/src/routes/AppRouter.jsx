@@ -5,6 +5,7 @@ import RegisterPage from '../pages/RegisterPage';
 import DashboardPage from '../pages/DashboardPage';
 import ProtectedRoute from './ProtectedRoute';
 import TeamDetailsPage from '../pages/TeamDetailsPage';
+import SeasonDetailsPage from '../pages/SeasonDetailsPage';
 
 
 const AppRouter = () => {
@@ -27,6 +28,15 @@ const AppRouter = () => {
             element={
                 <ProtectedRoute>
                     <TeamDetailsPage />
+                </ProtectedRoute>
+            }
+            />
+
+            <Route 
+            path="/seasons/:seasonId"
+            element={
+                <ProtectedRoute>
+                    <SeasonDetailsPage />
                 </ProtectedRoute>
             }
             />
