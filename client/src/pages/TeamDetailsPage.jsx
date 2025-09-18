@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react'; // Import useCallback
 import { useParams, Link } from 'react-router-dom';
 import { getTeamById, requestToJoin } from '../api/teamsApi';
 import { getAllFixtures } from '../api/fixturesApi';
@@ -9,7 +9,7 @@ import Button from '../components/common/Button';
 import TeamRoster from '../features/teams/TeamRoster';
 import TeamFixtures from '../features/teams/TeamFixtures';
 import LeagueStandings from '../features/teams/LeagueStandings';
-// We'll create JoinRequests management for captains later
+import JoinRequests from '../features/teams/JoinRequests'; // Import the new component
 
 const TeamDetailsPage = () => {
   const { teamId } = useParams();
@@ -21,31 +21,32 @@ const TeamDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchTeamData = async () => {
-      try {
-        setIsLoading(true);
-        const teamResponse = await getTeamById(teamId);
-        const fetchedTeam = teamResponse.data.data;
-        setTeam(fetchedTeam);
+    const fetchTeamData = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const teamResponse = await getTeamById(teamId);
+            const fetchedTeam = teamResponse.data.data;
+            setTeam(fetchedTeam);
 
-        // Fetch fixtures and standings once we have team data
-        const fixturesResponse = await getAllFixtures();
-        const teamFixtures = fixturesResponse.data.data.filter(f => f.home_team_id === teamId || f.away_team_id === teamId);
-        setFixtures(teamFixtures);
+            const fixturesResponse = await getAllFixtures();
+            const teamFixtures = fixturesResponse.data.data.filter(f => f.home_team_id === teamId || f.away_team_id === teamId);
+            setFixtures(teamFixtures);
 
-        const standingsResponse = await getLeagueStandings(fetchedTeam.season_id, fetchedTeam.sport_id);
-        setStandings(standingsResponse.data.data);
+            if (fetchedTeam) {
+                const standingsResponse = await getLeagueStandings(fetchedTeam.season_id, fetchedTeam.sport_id);
+                setStandings(standingsResponse.data.data);
+            }
+        } catch (err) {
+            setError('Failed to fetch team details.');
+            console.error('Error fetching team details:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [teamId]); // Dependency array for useCallback
 
-      } catch (err) {
-        setError('Failed to fetch team details.');
-        console.error('Error fetching team details:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchTeamData();
-  }, [teamId]);
+    useEffect(() => {
+        fetchTeamData();
+    }, [fetchTeamData]); // useEffect now depends on the stable fetch function
 
   const handleJoinRequest = async () => {
     try {
@@ -74,20 +75,24 @@ const TeamDetailsPage = () => {
         )}
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <TeamRoster members={team.members} />
-          </Card>
-          <TeamFixtures fixtures={fixtures} teamId={teamId} isCaptain={isCaptain} />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-6">
+                    <Card>
+                        <TeamRoster members={team?.members} />
+                    </Card>
+                    <TeamFixtures fixtures={fixtures} teamId={teamId} isCaptain={isCaptain} />
+                </div>
+                <div className="lg:col-span-1 space-y-6">
+                    {/* Render captain's tools if the user is the captain */}
+                    {isCaptain && (
+                        <JoinRequests teamId={teamId} onAction={fetchTeamData} />
+                    )}
+                    <LeagueStandings standings={standings} teamId={teamId} />
+                </div>
+            </div>
         </div>
-        <div className="lg:col-span-1 space-y-6">
-          {/* Captain's management section would go here */}
-          <LeagueStandings standings={standings} teamId={teamId} />
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
+
 
 export default TeamDetailsPage;
