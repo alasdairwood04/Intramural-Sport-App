@@ -12,6 +12,8 @@ router.get('/:teamId', isAuthenticated, teamController.getTeamById);
 // GET /api/teams (list all teams)
 router.get('/', isAuthenticated, teamController.getAllTeams);
 
+// GET all teams the current user is a member of
+router.get('/user/me', isAuthenticated, teamController.getMyTeams);
 
 // PUT /api/teams/:id (update team)
 router.put("/:teamId", isAuthenticated, isTeamCaptainOrAdmin, teamController.updateTeam);

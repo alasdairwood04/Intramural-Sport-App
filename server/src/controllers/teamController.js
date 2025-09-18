@@ -181,4 +181,16 @@ exports.rejectJoinRequest = async (req, res, next) => {
     }
 };
 
+exports.getMyTeams = async (req, res, next) => {
+    try {
+        const userId = req.user.id; // Get the logged-in user's ID from req.user
+
+        const teams = await Team.getUserTeams(userId);
+        res.status(200).json({ success: true, data: teams });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 // delete a team (captain or admin only)
