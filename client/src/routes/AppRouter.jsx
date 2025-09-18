@@ -4,6 +4,7 @@ import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import DashboardPage from '../pages/DashboardPage';
 import ProtectedRoute from './ProtectedRoute';
+import TeamDetailsPage from '../pages/TeamDetailsPage';
 
 
 const AppRouter = () => {
@@ -19,6 +20,15 @@ const AppRouter = () => {
                     <DashboardPage />
                 </ProtectedRoute>
             } 
+            />
+
+            <Route 
+            path="/teams/:teamId"
+            element={
+                <ProtectedRoute>
+                    <TeamDetailsPage />
+                </ProtectedRoute>
+            }
             />
         </Routes>
     )

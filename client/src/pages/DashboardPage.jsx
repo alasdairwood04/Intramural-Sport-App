@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from "../hooks/useAuth";
 import { getUserTeams } from '../api/teamsApi';
 import { getActiveSeasons } from '../api/seasonsApi';
+import { Link } from 'react-router-dom';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 import Modal from '../components/common/Modal';
@@ -91,12 +92,14 @@ const DashboardPage = () => {
                 )}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {userTeams.map(team => (
-                        <Card key={team.id} className="hover:shadow-lg transition-shadow">
-                        <h3 className="font-bold text-lg">{team.name}</h3>
-                        <p className="text-sm text-gray-600">{team.sport_name}</p>
-                        <p className="text-xs text-gray-500">{team.season_name}</p>
-                        <span className="mt-2 inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full capitalize">{team.user_role}</span>
-                        </Card>
+                        <Link to={`/teams/${team.id}`} key={team.id}>
+                            <Card className="hover:shadow-lg hover:border-blue-500 border border-transparent transition-all">
+                                <h3 className="font-bold text-lg text-gray-800">{team.name}</h3>
+                                <p className="text-sm text-gray-600">{team.sport_name}</p>
+                                <p className="text-xs text-gray-500">{team.season_name}</p>
+                                <span className="mt-2 inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full capitalize">{team.user_role}</span>
+                            </Card>
+                        </Link>
                     ))}
                 </div>
             </Card>

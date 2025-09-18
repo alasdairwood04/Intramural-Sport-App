@@ -12,3 +12,6 @@ export const createTeam = (teamData) => {
     return apiClient.post('/teams', teamData);
 };
 
+export const getTeamById = (teamId) => {
+    return apiClient.get(`/teams/${teamId}`);
+};
