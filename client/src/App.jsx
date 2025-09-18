@@ -1,12 +1,19 @@
-import './styles/index.css'
+// alasdairwood04/intramural-sport-app/Intramural-Sport-App-99e1da5415a846419501e81dab912798cc11b8c9/client/src/App.jsx
+import { BrowserRouter as Router } from 'react-router-dom';
+import AppRouter from './routes/AppRouter';
+import Navbar from './components/layout/Navbar';
 
 function App() {
-
   return (
-    <div className="min-h-screen">
-      <h1 className="text-4xl font-bold bg-gray-50 p-4 px-12 text-center shadow-md font-sans">Intramural Sport App</h1>
-    </div>
-  )
+    <Router>
+      <div className="min-h-screen bg-gray-50 font-sans">
+        <Navbar />
+        <main className="container mx-auto p-4 sm:p-6 lg:p-8">
+          <AppRouter />
+        </main>
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;
