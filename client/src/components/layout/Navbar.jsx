@@ -1,4 +1,3 @@
-// alasdairwood04/intramural-sport-app/Intramural-Sport-App-99e1da5415a846419501e81dab912798cc11b8c9/client/src/components/layout/Navbar.jsx
 import { Link } from 'react-router-dom';
 // We'll create the useAuth hook next
 // import { useAuth } from '../../hooks/useAuth'; 
