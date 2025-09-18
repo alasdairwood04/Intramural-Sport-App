@@ -257,18 +257,6 @@ async updateTeam(teamId, updateData) {
         );
         return rows[0];
     },
-
-    async getTeamsByUserId(userId) {
-        const { rows } = await pool.query(
-            `SELECT t.*, s.name as sport_name, se.name as season_name
-            FROM teams t
-            JOIN sports s ON t.sport_id = s.id
-            JOIN seasons se ON t.season_id = se.id
-            WHERE t.id IN (SELECT team_id FROM team_members WHERE user_id = $1)`,
-            [userId]
-        );
-        return rows;
-    }
 };
 
 

@@ -85,3 +85,25 @@ SELECT * FROM teamsheets;
 -- @block
 -- get all from teamsheet_players
 SELECT * FROM teamsheet_players;
+
+
+-- @block
+-- set 30df96ac-563a-4485-a723-e736f97e2417 to active
+UPDATE seasons SET is_active = true WHERE id = '30df96ac-563a-4485-a723-e736f97e2417';
+
+-- @block
+-- get all teams the user with id 87043184-d387-45d5-a672-5e68b55e2f50 is a member of
+SELECT t.*
+FROM teams t
+JOIN team_members tm ON t.id = tm.team_id
+WHERE tm.user_id = '1a303e0c-3890-40d8-ba05-41997527f59c';
+
+-- @block
+SELECT t.*, s.name as sport_name, se.name as season_name,
+        tm.role as user_role
+      FROM teams t
+      JOIN sports s ON t.sport_id = s.id
+      JOIN seasons se ON t.season_id = se.id
+      JOIN team_members tm ON t.id = tm.team_id
+      WHERE tm.user_id = '1a303e0c-3890-40d8-ba05-41997527f59c' AND tm.is_active = true
+      ORDER BY t.created_at DESC
