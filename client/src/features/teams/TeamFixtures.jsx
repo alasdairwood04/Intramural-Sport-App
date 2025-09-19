@@ -24,7 +24,7 @@ const TeamFixtures = ({ fixtures = [], teamId, isCaptain }) => {
             {upcomingFixtures.map(fixture => (
               <li key={fixture.id} className="p-2 bg-gray-50 rounded-md flex justify-between items-center">
                 <span>vs {getOpponentName(fixture)}</span>
-                {isCaptain && <Link to={`/fixtures/${fixture.id}/teamsheet`} className="text-xs text-blue-600 hover:underline">Manage Teamsheet</Link>}
+                {isCaptain && <Link to={`/fixtures/${fixture.id}/teamsheet/${teamId}`} className="text-xs text-blue-600 hover:underline">Manage Teamsheet</Link>}
               </li>
             ))}
           </ul>
