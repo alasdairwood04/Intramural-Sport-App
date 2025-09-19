@@ -63,3 +63,13 @@ exports.getPotentialOpponents = async (req, res, next) => {
         next(error);
     }
 }
+
+exports.getTeamsByFixture = async (req, res, next) => {
+    try {
+        const fixtureId = req.params.fixtureId;
+        const teams = await Fixture.findTeamsByFixture(fixtureId);
+        res.status(200).json({ success: true, data: teams });
+    } catch (error) {
+        next(error);
+    }
+};

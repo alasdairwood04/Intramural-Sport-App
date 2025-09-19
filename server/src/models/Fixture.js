@@ -62,7 +62,20 @@ const Fixture = {
             [teamId]
         );
         return rows;
-    }
+    },
+
+    async findTeamsByFixture(fixtureId) {
+        const { rows } = await pool.query(
+            `SELECT ht.id AS home_team_id, ht.name AS home_team_name,
+                    at.id AS away_team_id, at.name AS away_team_name
+             FROM fixtures f
+             JOIN teams ht ON f.home_team_id = ht.id
+             JOIN teams at ON f.away_team_id = at.id
+             WHERE f.id = $1;`,
+            [fixtureId]
+        );
+        return rows;
+    },
 };
 
 
