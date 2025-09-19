@@ -19,7 +19,16 @@ const Fixture = {
     },
 
     async findById(id) {
-        const { rows } = await pool.query("SELECT * FROM fixtures WHERE id = $1", [id]);
+        const { rows } = await pool.query(
+            `SELECT f.*, 
+                    ht.name AS home_team_name, ht.captain_id AS home_team_captain_id,
+                    at.name AS away_team_name, at.captain_id AS away_team_captain_id
+             FROM fixtures f
+             JOIN teams ht ON f.home_team_id = ht.id
+             JOIN teams at ON f.away_team_id = at.id
+             WHERE f.id = $1`, 
+            [id]
+        );
         return rows[0];
     },
 
@@ -74,7 +83,14 @@ const Fixture = {
              WHERE f.id = $1;`,
             [fixtureId]
         );
-        return rows;
+        if (rows.length > 0) {
+            const row = rows[0];
+            return {
+                home_team: { id: row.home_team_id, name: row.home_team_name },
+                away_team: { id: row.away_team_id, name: row.away_team_name }
+            };
+        }
+        return null;
     },
 };
 

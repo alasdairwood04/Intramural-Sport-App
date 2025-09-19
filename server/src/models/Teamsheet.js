@@ -1,51 +1,57 @@
 const pool = require('../config/database');
 
 const Teamsheet = {
-    async submit(data) {
+    async create(data) {
         const client = await pool.connect();
-        
         try {
             await client.query('BEGIN');
-            
-            // Create or update the teamsheet
             const teamsheetResult = await client.query(
-                `INSERT INTO teamsheets (fixture_id, team_id)
-                 VALUES ($1, $2)
-                 ON CONFLICT (fixture_id, team_id) 
-                 DO UPDATE SET updated_at = CURRENT_TIMESTAMP
-                 RETURNING id`,
+                `INSERT INTO teamsheets (fixture_id, team_id) VALUES ($1, $2) RETURNING id`,
                 [data.fixture_id, data.team_id]
             );
-            
+            const teamsheetId = teamsheetResult.rows[0].id;
+
+            if (data.player_ids && data.player_ids.length > 0) {
+                const playerValues = data.player_ids.map((_, index) => `($1, $${index + 2})`).join(', ');
+                const queryParams = [teamsheetId, ...data.player_ids];
+                await client.query(`INSERT INTO teamsheet_players (teamsheet_id, player_id) VALUES ${playerValues}`, queryParams);
+            }
+            await client.query('COMMIT');
+            return await this.get(data.fixture_id, data.team_id);
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
+    },
+
+    async update(fixtureId, teamId, data) {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            const teamsheetResult = await client.query(
+                `SELECT id FROM teamsheets WHERE fixture_id = $1 AND team_id = $2`,
+                [fixtureId, teamId]
+            );
+
+            if (teamsheetResult.rows.length === 0) {
+                throw new Error('Teamsheet not found to update.');
+            }
             const teamsheetId = teamsheetResult.rows[0].id;
             
-            // Delete any existing player entries
-            await client.query(
-                `DELETE FROM teamsheet_players WHERE teamsheet_id = $1`,
-                [teamsheetId]
-            );
-            
-            // Insert new player entries
+            await client.query(`UPDATE teamsheets SET updated_at = CURRENT_TIMESTAMP WHERE id = $1`, [teamsheetId]);
+            await client.query(`DELETE FROM teamsheet_players WHERE teamsheet_id = $1`, [teamsheetId]);
+
             if (data.player_ids && data.player_ids.length > 0) {
-                // Prepare values for bulk insert
-                const playerValues = data.player_ids.map((playerId, index) => {
-                    return `($1, $${index + 2})`;
-                }).join(', ');
-                
+                const playerValues = data.player_ids.map((_, index) => `($1, $${index + 2})`).join(', ');
                 const queryParams = [teamsheetId, ...data.player_ids];
-                
-                await client.query(
-                    `INSERT INTO teamsheet_players (teamsheet_id, player_id)
-                     VALUES ${playerValues}`,
-                    queryParams
-                );
+                await client.query(`INSERT INTO teamsheet_players (teamsheet_id, player_id) VALUES ${playerValues}`, queryParams);
             }
             
             await client.query('COMMIT');
-            
-            // Return the complete teamsheet with players
-            return await this.get(data.fixture_id, data.team_id);
-            
+            return await this.get(fixtureId, teamId);
         } catch (error) {
             await client.query('ROLLBACK');
             throw error;

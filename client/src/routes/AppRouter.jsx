@@ -7,6 +7,7 @@ import ProtectedRoute from './ProtectedRoute';
 import TeamDetailsPage from '../pages/TeamDetailsPage';
 import SeasonDetailsPage from '../pages/SeasonDetailsPage';
 import TeamsheetPage from '../pages/TeamsheetPage';
+import FixtureTeamsheetPage from '../pages/FixtureTeamsheetPage'; // Import the new page
 
 
 const AppRouter = () => {
@@ -49,7 +50,22 @@ const AppRouter = () => {
                 </ProtectedRoute>
             }
             />
-
+            <Route 
+                path="/fixtures/:fixtureId/teamsheets"
+                element={
+                    <ProtectedRoute>
+                        <FixtureTeamsheetPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route 
+                path="/fixtures/:fixtureId/teamsheet/:teamId"
+                element={
+                    <ProtectedRoute>
+                        <TeamsheetPage />
+                    </ProtectedRoute>
+                }
+            />
         </Routes>
     )
 }

@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const teamsheetController = require('../controllers/teamsheetController');
-const { isAuthenticated, isCaptain, isFixtureCaptainOrAdmin } = require('../middleware/auth');
+const { isAuthenticated, isFixtureCaptainOrAdmin } = require('../middleware/auth');
 
-// Submit a teamsheet (captain of the team only)
-router.post('/fixtures/:id/teamsheet', isAuthenticated, isFixtureCaptainOrAdmin, teamsheetController.submitTeamsheet);
+// POST to create a teamsheet
+router.post('/fixtures/:id/teamsheet', isAuthenticated, isFixtureCaptainOrAdmin, teamsheetController.createTeamsheet);
 
-// Get a specific teamsheet
+// PUT to update a teamsheet
+router.put('/fixtures/:id/teamsheet/:teamId', isAuthenticated, isFixtureCaptainOrAdmin, teamsheetController.updateTeamsheet);
+
+// GET routes
 router.get('/fixtures/:id/teamsheet/:teamId', isAuthenticated, teamsheetController.getTeamsheet);
-
-// Get both teamsheets for a fixture
 router.get('/fixtures/:id/teamsheets', isAuthenticated, teamsheetController.getFixtureTeamsheets);
 
 module.exports = router;

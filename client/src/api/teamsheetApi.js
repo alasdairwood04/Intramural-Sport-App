@@ -1,14 +1,19 @@
-import apiClient from "./api";
+import apiClient from './api';
 
 export const getTeamsheet = (fixtureId, teamId) => {
     return apiClient.get(`/fixtures/${fixtureId}/teamsheet/${teamId}`);
 };
 
-export const submitTeamsheet = (fixtureId, teamsheetData) => {
+// POST for creating
+export const createTeamsheet = (fixtureId, teamsheetData) => {
     return apiClient.post(`/fixtures/${fixtureId}/teamsheet`, teamsheetData);
 };
 
-// get both team names by fixture ids
-export const getTeamsForMultipleFixtures = (fixtureId) => {
-    return apiClient.get(`/fixtures/:${fixtureId}/teamsheets`);
+// PUT for updating
+export const updateTeamsheet = (fixtureId, teamId, teamsheetData) => {
+    return apiClient.put(`/fixtures/${fixtureId}/teamsheet/${teamId}`, teamsheetData);
+};
+
+export const getFixtureTeamsheets = (fixtureId) => {
+    return apiClient.get(`/fixtures/${fixtureId}/teamsheets`);
 };

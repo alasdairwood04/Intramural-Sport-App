@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getTeamById } from '../api/teamsApi';
-import { getTeamsheet, submitTeamsheet } from '../api/teamsheetApi';
+import { getTeamsheet, createTeamsheet, updateTeamsheet } from '../api/teamsheetApi';
 import { useAuth } from '../hooks/useAuth';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
@@ -10,47 +10,44 @@ const TeamsheetPage = () => {
     const { fixtureId, teamId } = useParams();
     const { user } = useAuth();
     const [team, setTeam] = useState(null);
+    const [existingTeamsheet, setExistingTeamsheet] = useState(null);
     const [selectedPlayers, setSelectedPlayers] = useState(new Set());
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const isCaptain = user?.id === team?.captain_id;
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setIsLoading(true);
-                const teamResponse = await getTeamById(teamId);
-                setTeam(teamResponse.data.data);
+    const fetchData = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const teamResponse = await getTeamById(teamId);
+            setTeam(teamResponse.data.data);
 
-                try {
-                    const teamsheetResponse = await getTeamsheet(fixtureId, teamId);
-                    const fetchedTeamsheet = teamsheetResponse.data.data;
-                    if (fetchedTeamsheet) {
-                        setSelectedPlayers(new Set(fetchedTeamsheet.players.map(p => p.player_id)));
-                    }
-                } catch (err) {
-                    if (err.response && err.response.status !== 404) {
-                        throw err; // Re-throw other errors
-                    }
+            try {
+                const teamsheetResponse = await getTeamsheet(fixtureId, teamId);
+                const fetchedTeamsheet = teamsheetResponse.data.data;
+                if (fetchedTeamsheet) {
+                    setExistingTeamsheet(fetchedTeamsheet);
+                    setSelectedPlayers(new Set(fetchedTeamsheet.players.map(p => p.player_id)));
                 }
             } catch (err) {
-                setError('Failed to fetch data.');
-                console.error('Error:', err);
-            } finally {
-                setIsLoading(false);
+                if (err.response && err.response.status !== 404) throw err;
             }
-        };
-        fetchData();
+        } catch (err) {
+            setError('Failed to fetch data.');
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+        }
     }, [fixtureId, teamId]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const handlePlayerSelection = (playerId) => {
         const newSelection = new Set(selectedPlayers);
-        if (newSelection.has(playerId)) {
-            newSelection.delete(playerId);
-        } else {
-            newSelection.add(playerId);
-        }
+        newSelection.has(playerId) ? newSelection.delete(playerId) : newSelection.add(playerId);
         setSelectedPlayers(newSelection);
     };
 
@@ -61,11 +58,19 @@ const TeamsheetPage = () => {
         };
 
         try {
-            await submitTeamsheet(fixtureId, teamsheetData);
+            let updatedTeamsheet;
+            if (existingTeamsheet) {
+                const response = await updateTeamsheet(fixtureId, teamId, teamsheetData);
+                updatedTeamsheet = response.data.data;
+            } else {
+                const response = await createTeamsheet(fixtureId, teamsheetData);
+                updatedTeamsheet = response.data.data;
+            }
+            setExistingTeamsheet(updatedTeamsheet);
             alert('Teamsheet saved successfully!');
         } catch (err) {
             setError('Failed to save teamsheet.');
-            console.error('Error saving teamsheet:', err);
+            console.error(err);
         }
     };
 
