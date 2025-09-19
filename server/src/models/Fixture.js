@@ -51,6 +51,17 @@ const Fixture = {
             [teamId]
         );
         return rows;
+    },
+
+    async findPotentialOpponents(teamId) {
+        const { rows } = await pool.query(
+            `SELECT t2.*
+             FROM teams t1
+             JOIN teams t2 ON t1.season_id = t2.season_id
+             WHERE t1.id = $1 AND t2.id != $1;`,
+            [teamId]
+        );
+        return rows;
     }
 };
 
