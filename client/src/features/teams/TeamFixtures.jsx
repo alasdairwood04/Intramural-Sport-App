@@ -5,6 +5,15 @@ const TeamFixtures = ({ fixtures = [], teamId, isCaptain }) => {
   const upcomingFixtures = fixtures.filter(f => f.status !== 'completed');
   const pastFixtures = fixtures.filter(f => f.status === 'completed');
 
+  // Helper function to get opponent name
+  const getOpponentName = (fixture) => {
+    if (fixture.home_team_id === teamId) {
+      return fixture.away_team_name || "Unknown Opponent";
+    } else {
+      return fixture.home_team_name || "Unknown Opponent";
+    }
+  };
+
   return (
     <Card>
       <h3 className="text-lg font-semibold mb-3">Fixtures</h3>
@@ -14,7 +23,7 @@ const TeamFixtures = ({ fixtures = [], teamId, isCaptain }) => {
           <ul className="space-y-2">
             {upcomingFixtures.map(fixture => (
               <li key={fixture.id} className="p-2 bg-gray-50 rounded-md flex justify-between items-center">
-                <span>vs Opponent</span>
+                <span>vs {getOpponentName(fixture)}</span>
                 {isCaptain && <Link to={`/fixtures/${fixture.id}/teamsheet`} className="text-xs text-blue-600 hover:underline">Manage Teamsheet</Link>}
               </li>
             ))}
@@ -27,7 +36,7 @@ const TeamFixtures = ({ fixtures = [], teamId, isCaptain }) => {
           <ul className="space-y-2">
             {pastFixtures.map(fixture => (
                <li key={fixture.id} className="p-2 bg-gray-50 rounded-md">
-                vs Opponent: {fixture.home_team_id === teamId ? `${fixture.home_team_score} - ${fixture.away_team_score}` : `${fixture.away_team_score} - ${fixture.home_team_score}`}
+                vs {getOpponentName(fixture)}: {fixture.home_team_id === teamId ? `${fixture.home_team_score} - ${fixture.away_team_score}` : `${fixture.away_team_score} - ${fixture.home_team_score}`}
                </li>
             ))}
           </ul>
