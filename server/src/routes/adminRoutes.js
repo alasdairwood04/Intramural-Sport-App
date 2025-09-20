@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
-const { isAdmin } = require('../middleware/authMiddleware');
+const { isAdmin } = require('../middleware/auth');
 
 // Sports Management Routes
 router.get('/sports', isAdmin, adminController.getAllSports);
@@ -31,4 +31,8 @@ router.post('/seasons', isAdmin, adminController.createSeason);
 router.put('/seasons/:id', isAdmin, adminController.updateSeason);
 router.delete('/seasons/:id', isAdmin, adminController.deleteSeason);
 
+
+
+// get dashboard stats
+router.get('/dashboard-stats', isAdmin, adminController.getDashboardStats);
 module.exports = router;

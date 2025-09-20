@@ -150,6 +150,15 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+exports.updateUserRole = async (req, res) => {
+    try {
+        const updatedUser = await User.updateRole(req.params.id, req.body.role);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating user role', error });
+    }
+};
+
 exports.deleteUser = async (req, res) => {
     try {
         const deletedUser = await User.delete(req.params.id);
@@ -201,5 +210,23 @@ exports.deleteSeason = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: 'Error deleting season', error });
+    }
+};
+
+exports.getDashboardStats = async (req, res) => {
+    try {
+        const sports = await Sport.getAllSports();
+        const teams = await Team.getAllTeams();
+        const users = await User.getAllUsers();
+        const seasons = await Season.getAllSeasons();
+
+        res.status(200).json({
+            sports,
+            teams,
+            users,
+            seasons
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching dashboard stats', error });
     }
 };

@@ -74,11 +74,21 @@ const User = {
         return rows[0];
     },
 
+    // Update user role
+    async updateRole(userId, newRole) {
+        const { rows } = await pool.query(`
+            UPDATE users SET role = $1 WHERE id = $2 RETURNING id, email, first_name, last_name, student_id, role;`,
+            [newRole, userId]
+        );
+        return rows[0];
+    },
+
     // Delete a user by their ID
     async delete(userId) {
         const { rowCount } = await pool.query("DELETE FROM users WHERE id = $1", [userId]);
         return rowCount > 0;
     }
 };
+
 
 module.exports = User;

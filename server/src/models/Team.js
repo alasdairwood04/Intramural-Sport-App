@@ -259,6 +259,7 @@ async updateTeam(teamId, updateData) {
     },
 
 
+    // Assign a new captain to the team
     async updateCaptain(teamId, userId) {
         const { rows } = await pool.query(
             `UPDATE teams SET captain_id = $1 WHERE id = $2 RETURNING *;`,
