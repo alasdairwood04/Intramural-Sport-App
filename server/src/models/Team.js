@@ -257,6 +257,15 @@ async updateTeam(teamId, updateData) {
         );
         return rows[0];
     },
+
+
+    async updateCaptain(teamId, userId) {
+        const { rows } = await pool.query(
+            `UPDATE teams SET captain_id = $1 WHERE id = $2 RETURNING *;`,
+            [userId, teamId]
+        );
+        return rows[0];
+    }
 };
 
 

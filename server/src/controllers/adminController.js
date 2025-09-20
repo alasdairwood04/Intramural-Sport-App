@@ -89,6 +89,39 @@ exports.deleteTeam = async (req, res) => {
 };
 
 
+exports.assignTeamCaptain = async (req, res) => {
+    try {
+        const { teamId } = req.params;
+        const { userId } = req.body; // New captain's user ID from request body
+
+        // Find the team and update its captain
+        const updatedTeam = await Team.updateCaptain(teamId, userId);
+        if (updatedTeam) {
+            res.status(200).json({ message: 'Team captain assigned successfully', team: updatedTeam });
+        } else {
+            res.status(404).json({ message: 'Team not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error assigning team captain', error });
+    }
+};
+
+exports.changeTeamCaptain = async (req, res) => {
+    try {
+        const { teamId } = req.params;
+        const { newCaptainId } = req.body; // New captain's user ID from request body
+        // Find the team and update its captain
+        const updatedTeam = await Team.updateCaptain(teamId, newCaptainId);
+        if (updatedTeam) {
+            res.status(200).json({ message: 'Team captain changed successfully', team: updatedTeam });
+        } else {
+            res.status(404).json({ message: 'Team not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error changing team captain', error });
+    }
+};
+
 // User Management (CRUD)
 exports.getAllUsers = async (req, res) => {
     try {

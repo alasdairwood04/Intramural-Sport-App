@@ -14,6 +14,10 @@ router.get('/teams', isAdmin, adminController.getAllTeams);
 router.post('/teams', isAdmin, adminController.createTeam);
 router.put('/teams/:id', isAdmin, adminController.updateTeam);
 router.delete('/teams/:id', isAdmin, adminController.deleteTeam);
+// assign team captain
+router.put('/teams/:id/captain', isAdmin, adminController.assignTeamCaptain);
+// change team captain
+router.put('/teams/:id/change-captain', isAdmin, adminController.changeTeamCaptain);
 
 // User Management Routes
 router.get('/users', isAdmin, adminController.getAllUsers);
