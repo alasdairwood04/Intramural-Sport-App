@@ -1,4 +1,3 @@
-// client/src/pages/ManageSeasonsPage.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllSeasons, deleteSeason } from '../api/seasonsApi';

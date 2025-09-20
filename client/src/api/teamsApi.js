@@ -12,6 +12,15 @@ export const createTeam = (teamData) => {
     return apiClient.post('/teams', teamData);
 };
 
+export const deleteTeam = (teamId) => {
+    return apiClient.delete(`/teams/${teamId}`);
+};
+
+export const updateTeam = (teamId, teamData) => {
+    return apiClient.put(`/teams/${teamId}`, teamData);
+}
+
+
 export const getTeamById = (teamId) => {
     return apiClient.get(`/teams/${teamId}`);
 };

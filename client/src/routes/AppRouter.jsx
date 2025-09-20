@@ -12,7 +12,7 @@ import AdminDashboardPage from '../pages/AdminDashboardPage';
 import ManageSportsPage from '../pages/ManageSportsPage';
 import ManageSeasonsPage from '../pages/ManageSeasonsPage';
 // import ManageUsersPage from '../pages/ManageUsersPage';
-// import ManageTeamsPage from '../pages/ManageTeamsPage';
+import ManageTeamsPage from '../pages/ManageTeamsPage';
 import LoginHandler from '../components/LoginHandler'; // Import the LoginHandler
 
 const AppRouter = () => {
@@ -91,7 +91,7 @@ const AppRouter = () => {
                     </ProtectedRoute>
                 } 
             />
-            {/* <Route 
+            <Route 
                 path="/admin/manage-teams" 
                 element={
                     <ProtectedRoute>
@@ -99,7 +99,7 @@ const AppRouter = () => {
                     </ProtectedRoute>
                 } 
             />
-            <Route 
+            {/* <Route 
                 path="/admin/manage-users" 
                 element={
                     <ProtectedRoute>

@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { createSeason, updateSeason } from '../../api/seasonsApi'; // We'll add these to the API file
+import { createSeason, updateSeason } from '../../api/seasonsApi'; 
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 
