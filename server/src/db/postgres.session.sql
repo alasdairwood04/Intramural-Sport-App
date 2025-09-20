@@ -134,3 +134,21 @@ VALUES
     ('historyRugby1@example.com', 'password123', 'History1', 'Rugby1', 'student1', 'player'),
     ('historyRugby2@example.com', 'password123', 'History2', 'Rugby2', 'student2', 'player'),
     ('historyRugby3@example.com', 'password123', 'History3', 'Rugby3', 'student3', 'player');
+
+
+-- @block
+-- get all teams in teh same season as for team id 1ccab3ce-3922-4c03-8cfa-54ce49b62378
+SELECT t2.*
+FROM teams t1
+JOIN teams t2 ON t1.season_id = t2.season_id
+WHERE t1.id = '1ccab3ce-3922-4c03-8cfa-54ce49b62378';
+
+-- @block
+-- find team names by fixture id 26a87852-2238-4be6-a938-29bc82f11ff2
+SELECT
+    ht.name AS home_team_name,
+    at.name AS away_team_name
+FROM fixtures f
+JOIN teams ht ON f.home_team_id = ht.id
+JOIN teams at ON f.away_team_id = at.id
+WHERE f.id = '26a87852-2238-4be6-a938-29bc82f11ff2';

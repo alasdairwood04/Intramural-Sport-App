@@ -44,6 +44,7 @@ const teamRoutes = require('./routes/teamRoutes');
 const sportRoutes = require('./routes/sportRoutes');
 const seasonRoutes = require('./routes/seasonRoutes');
 const fixtureRoutes = require('./routes/fixtureRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 // --- Routers with multiple base paths ---
 const notificationRoutes = require('./routes/notificationRoutes');
 const availabilityRoutes = require('./routes/availabilityRoutes');
@@ -57,6 +58,7 @@ app.use('/api/teams', teamRoutes);
 app.use('/api/sports', sportRoutes);
 app.use('/api/seasons', seasonRoutes);
 app.use('/api/fixtures', fixtureRoutes);
+app.use('/api/admin', adminRoutes);
 // --- Correctly mount routers with multiple base paths ---
 app.use('/api', availabilityRoutes);
 app.use('/api', teamsheetRoutes);
