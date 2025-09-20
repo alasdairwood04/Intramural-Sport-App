@@ -9,7 +9,7 @@ import SeasonDetailsPage from '../pages/SeasonDetailsPage';
 import TeamsheetPage from '../pages/TeamsheetPage';
 import FixtureTeamsheetPage from '../pages/FixtureTeamsheetPage'; // Import the new page
 import AdminDashboardPage from '../pages/AdminDashboardPage';
-
+import ManageSportsPage from '../pages/ManageSportsPage';
 
 const AppRouter = () => {
     return (
@@ -74,6 +74,20 @@ const AppRouter = () => {
                     </ProtectedRoute>
                 }
             />
+
+            <Route
+                path="/admin/manage-sports"
+                element={
+                    <ProtectedRoute>
+                        <ManageSportsPage />
+                    </ProtectedRoute>
+                }
+            />
+                {/* <Route path="/admin/manage-seasons" element={<ProtectedRoute><ManageSeasonsPage /></ProtectedRoute>} />
+            <Route path="/admin/manage-teams" element={<ProtectedRoute><ManageTeamsPage /></ProtectedRoute>} />
+            <Route path="/admin/manage-users" element={<ProtectedRoute><ManageUsersPage /></ProtectedRoute>} />
+            */}
+
         </Routes>
     )
 }
