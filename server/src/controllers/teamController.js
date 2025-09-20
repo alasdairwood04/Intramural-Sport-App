@@ -6,8 +6,9 @@ exports.createTeam = async (req, res, next) => {
     try {
         const { name, sportName, seasonName } = req.body;
         const userId = req.user.id; // Get the logged-in user's ID from req.user
+        const isAdmin = req.user.role === 'admin'; // Check if user is an admin
 
-        const newTeam = await Team.create({ name, sportName, seasonName, userId });
+        const newTeam = await Team.create({ name, sportName, seasonName, userId, isAdmin });
         res.status(201).json({ success: true, data: newTeam });
     } catch (error) {
         next(error); // Pass errors to the global error handler
@@ -107,6 +108,18 @@ exports.removeTeamMember = async (req, res, next) => {
 };
 
 
+exports.deleteTeam = async (req, res, next) => {
+    try {
+        const teamId = req.params.teamId; // Get teamId from route parameters
+        const deleted = await Team.delete(teamId);
+        if (!deleted) {
+            return res.status(404).json({ success: false, message: 'Team not found' });
+        }
+        res.status(200).json({ success: true, message: 'Team deleted successfully' });
+    } catch (error) {
+        next(error); // Pass errors to the global error handler
+    }
+};
 
 // update team
 exports.updateTeam = async (req, res, next) => {

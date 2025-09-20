@@ -9,7 +9,7 @@ const Team = {
     },
 
     async create(teamData) { // using a transaction to ensure all steps complete successfully
-        const { name, sportName, seasonName, userId } = teamData;
+        const { name, sportName, seasonName, userId, isAdmin } = teamData;
         const client = await pool.connect(); // Get a client from the pool for the transaction
 
         try {
@@ -25,19 +25,22 @@ const Team = {
             const seasonId = seasonRes.rows[0].id;
             
             // 2. Check if the user is already a captain of another team in the same sport/season
-            const existingTeamRes = await client.query(
-                `SELECT id FROM teams WHERE captain_id = $1 AND sport_id = $2 AND season_id = $3`,
-                [userId, sportId, seasonId]
-            );
-            if (existingTeamRes.rows.length > 0) {
-                throw new Error('You are already the captain of a team in this sport for this season.');
+            // Skip this check if the user is an admin
+            if (!isAdmin) {
+                const existingTeamRes = await client.query(
+                    `SELECT id FROM teams WHERE captain_id = $1 AND sport_id = $2 AND season_id = $3`,
+                    [userId, sportId, seasonId]
+                );
+                if (existingTeamRes.rows.length > 0) {
+                    throw new Error('You are already the captain of a team in this sport for this season.');
+                }
             }
 
             // 3. Create the new team
             const teamResult = await client.query(
                 `INSERT INTO teams (name, sport_id, season_id, captain_id)
-                 VALUES ($1, $2, $3, $4)
-                 RETURNING *;`,
+                VALUES ($1, $2, $3, $4)
+                RETURNING *;`,
                 [name, sportId, seasonId, userId]
             );
             const newTeam = teamResult.rows[0];
@@ -51,7 +54,7 @@ const Team = {
             // 5. Automatically add the captain to the team_members table
             await client.query(
                 `INSERT INTO team_members (team_id, user_id, role)
-                 VALUES ($1, $2, 'captain');`,
+                VALUES ($1, $2, 'captain');`,
                 [newTeam.id, userId]
             );
 
@@ -66,6 +69,11 @@ const Team = {
         } finally {
             client.release(); // Release the client back to the pool
         }
+    },
+
+    async delete(id) {
+        const { rowCount } = await pool.query("DELETE FROM teams WHERE id = $1", [id]);
+        return rowCount > 0;
     },
 
     async getMembers(teamId) {
@@ -188,7 +196,12 @@ async updateTeam(teamId, updateData) {
 
     async getAllTeams() {
         const { rows } = await pool.query(
-            `SELECT * FROM teams`
+            // You can expand this query to include joins with sports and seasons if needed
+            `SELECT t.*, s.name as sport_name, se.name as season_name
+             FROM teams t
+             JOIN sports s ON t.sport_id = s.id
+             JOIN seasons se ON t.season_id = se.id
+             ORDER BY t.created_at DESC`
         );
         return rows;
     },
