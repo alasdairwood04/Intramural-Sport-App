@@ -2,202 +2,231 @@
 
 ## 📌 Overview
 
-This is a full-stack application for managing intramural sports programs. It provides a platform for students to sign up, join teams, participate in sports events, and track their progress.
+A full-stack web application for managing university intramural sports. Students can register, join teams, participate in fixtures, and track their progress. Admins can manage sports, seasons, teams, users, and view league standings.
 
------
+---
 
 ## 🚧 Current State
 
-The project is in active development. The backend is substantially built out with a comprehensive feature set. The frontend is the next major development area.
+- **Backend:** Node.js + Express, PostgreSQL, Passport.js for authentication.
+- **Frontend:** React + Vite, Tailwind CSS. Core pages and admin dashboard are implemented.
+- **Database:** Comprehensive schema with migrations and seed data.
+- **Features:** User/team management, sports/seasons CRUD, fixtures, teamsheets, availability, notifications, league tables.
 
-  - **Backend:** Node.js with Express
-  - **Database:** PostgreSQL
-
------
-
+---
 ## 📂 Project Structure
-
 ```
 Intramural-Sport-App/
+├── LICENSE
+├── README.md
+├── client/
+│   ├── src/
+│   │   ├── api/            # API calls to backend
+│   │   ├── assets/         # CSS and images
+│   │   ├── components/     # Reusable UI components
+│   │   ├── contexts/       # React context providers
+│   │   ├── features/       # Feature modules (auth, teams, admin, etc.)
+│   │   ├── hooks/          # Custom hooks
+│   │   ├── pages/          # Page-level components
+│   │   ├── routes/         # App routing
+│   │   └── utils/          # Utility functions
+│   ├── public/
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
 ├── server/
 │   ├── src/
-│   │   ├── app.js                # Express application setup
-│   │   ├── config/               # Configuration files
-│   │   │   ├── database.js       # Database connection
-│   │   │   └── passport.js       # Authentication config
-│   │   ├── controllers/          # Request handlers
-│   │   ├── middleware/           # Custom middleware (auth)
-│   │   ├── models/               # Data models and database logic
-│   │   └── routes/               # API routes
-│   ├── migrations/               # Database migration files
-│   ├── utils/                    # Utility scripts (e.g., migration runner)
-│   ├── server.js                 # Entry point for the application
-│   └── package.json              # Project dependencies
+│   │   ├── config/         # DB and auth config
+│   │   ├── controllers/    # Route handlers
+│   │   ├── middleware/     # Auth middleware
+│   │   ├── models/         # DB models
+│   │   ├── routes/         # Express routes
+│   │   └── utils/          # Migration runner, etc.
+│   ├── migrations/         # DB migration files
+│   ├── seeds/              # Seed data
+│   ├── server.js           # App entry point
+│   └── package.json
 ```
-
------
 
 ## ✅ Features (Currently Implemented)
 
-  - **User Management:**
-      - User registration and login
-      - Role-based access control (`player`, `captain`, `admin`)
-      - Session management with Passport.js
-  - **Team Management:**
-      - Team creation
-      - Add/remove team members
-      - Join requests for teams (pending, approved, rejected)
-  - **Sports & Seasons:**
-      - Create, read, update, and delete sports (admin)
-      - Create, read, update, and delete seasons (admin)
-  - **Fixtures & Availability:**
-      - Create and view fixtures
-      - Confirm fixtures
-      - Submit match results
-      - Mark player availability for fixtures
-  - **Teamsheets:**
-      - Submit and view teamsheets for fixtures
-  - **League Standings:**
-      - Automatically calculated league tables with wins, losses, draws, and goals.
-  - **Notifications:**
-      - System for creating and managing user notifications.
+- **User Management**
+  - Registration, login, logout
+  - Role-based access (`player`, `captain`, `admin`)
+  - Admin can change user roles and delete users
 
------
+- **Team Management**
+  - Create, edit, delete teams
+  - Add/remove team members
+  - Join requests (pending, approve, reject)
+  - Assign captain
+
+- **Sports & Seasons**
+  - Admin CRUD for sports and seasons
+  - Set min/max team size for sports
+  - Active/inactive seasons
+
+- **Fixtures & Results**
+  - Propose, confirm, and complete fixtures
+  - Submit match results
+  - View upcoming and past fixtures
+
+- **Teamsheets & Availability**
+  - Submit teamsheets for fixtures
+  - Mark player availability
+
+- **League Standings**
+  - Automatic league tables (wins, losses, draws)
+  - Team and player stats
+
+- **Notifications**
+  - Admin can send notifications to users
+  - Users can view and mark notifications as read
+
+---
 
 ## 🗄️ Database Schema
 
-The database schema consists of the following tables:
+- `users`: User accounts, roles, authentication
+- `sports`: Sport definitions (name, description, team size)
+- `seasons`: Competition periods
+- `teams`: Team info, links to sport/season/captain
+- `team_members`: Users in teams
+- `join_requests`: Requests to join teams
+- `fixtures`: Scheduled matches
+- `availability`: Player availability for fixtures
+- `teamsheets`: Lineups for fixtures
+- `teamsheet_players`: Players on teamsheets
+- `notifications`: User notifications
 
-  - **`users`**: Stores user information, including authentication details and role.
-  - **`sports`**: Defines the different sports available.
-  - **`seasons`**: Defines different seasons or semesters.
-  - **`teams`**: Stores team information, linking to sports, seasons, and a captain.
-  - **`team_members`**: A join table linking users to teams.
-  - **`join_requests`**: Tracks requests from users to join teams.
-  - **`fixtures`**: Stores information about scheduled matches between teams.
-  - **`availability`**: Tracks player availability for specific fixtures.
-  - **`teamsheets`**: Stores the lineup for a team for a specific fixture.
-  - **`teamsheet_players`**: A join table linking players to a teamsheet.
-  - **`notifications`**: Stores notifications for users.
-
------
+---
 
 ## ⚙️ Setup Instructions
 
-### 📋 Prerequisites
+### Prerequisites
 
-  - [Node.js](https://nodejs.org/) (v14+)
-  - [PostgreSQL](https://www.postgresql.org/)
+- Node.js (v14+)
+- PostgreSQL
 
-### 🔧 Installation
+### Installation
 
-1.  **Clone the repository**
-
+1. **Clone the repository**
     ```bash
     git clone https://github.com/yourusername/Intramural-Sport-App.git
-    cd Intramural-Sport-App/server
     ```
 
-2.  **Install dependencies**
-
+2. **Install backend dependencies**
     ```bash
+    cd Intramural-Sport-App/server
     npm install
     ```
 
-3.  Create a `.env` file in `/server` with the following variables:
-
+3. **Install frontend dependencies**
     ```bash
-    DB_HOST=localhost
-    DB_PORT=5432
-    DB_NAME=intramural_sports
-    DB_USER=yourdbuser
-    DB_PASSWORD=yourdbpassword
-    SESSION_SECRET=yoursessionsecret
-    PORT=3000
+    cd ../client
+    npm install
     ```
 
-4.  Run database migrations
+4. **Configure environment variables**
+    - Create `.env` files in both `/server` and `/client` as needed.
+    - Example for `/server/.env`:
+    ```
+      DB_HOST=localhost
+      DB_PORT=5432
+      DB_NAME=intramural_sports_dev
+      DB_USER=yourdbuser
+      DB_PASS=yourdbpassword
+      SESSION_SECRET=yoursessionsecret
+      PORT=3000
+   ```
 
+5. **Run database migrations**
     ```bash
+    cd ../server
     npm run migrate
     ```
 
-5.  Start the development server
-
+6. **Start backend server**
     ```bash
     npm run dev
     ```
 
------
+7. **Start frontend**
+    ```bash
+    cd ../client
+    npm run dev
+    ```
+
+---
 
 ## 📡 API Endpoints
 
-### 🔓 Public Endpoints
+### Public Endpoints
 
-  - **GET** `/api/health` → Health check
-  - **POST** `/api/auth/register` → User registration
-  - **POST** `/api/auth/login` → User login
-  - **GET** `/api/sports` → Get all sports
-  - **GET** `/api/sports/:sportId` → Get a sport by ID
-  - **GET** `/api/seasons` → Get all seasons
-  - **GET** `/api/seasons/active` → Get active seasons
-  - **GET** `/api/seasons/:seasonId` → Get a season by ID
+- `GET /api/health` — Health check
+- `POST /api/auth/register` — Register user
+- `POST /api/auth/login` — Login
+- `GET /api/sports` — List sports
+- `GET /api/sports/:sportId` — Sport details
+- `GET /api/seasons` — List seasons
+- `GET /api/seasons/active` — Active seasons
+- `GET /api/seasons/:seasonId` — Season details
 
-### 🔒 Protected Endpoints
+### Protected Endpoints
 
-  - **GET** `/api/profile` → Get user profile
-  - **POST** `/api/auth/logout` → User logout
-  - **POST** `/api/teams` → Create a new team
-  - **GET** `/api/teams/:teamId` → Get team details
-  - **GET** `/api/teams` → List all teams
-  - **PUT** `/api/teams/:teamId` → Update team
-  - **POST** `/api/teams/:teamId/members` → Add player to a team
-  - **DELETE** `/api/teams/:teamId/:userId` → Remove player from a team
-  - **POST** `/api/teams/:teamId/requests` → Request to join a team
-  - **GET** `/api/teams/:teamId/requests/view` → View pending join requests
-  - **POST** `/api/teams/:teamId/requests/:requestId/approve` → Approve a join request
-  - **POST** `/api/teams/:teamId/requests/:requestId/reject` → Reject a join request
-  - **POST** `/api/sports` → Create a new sport (admin only)
-  - **PUT** `/api/sports/:sportId` → Update a sport (admin only)
-  - **DELETE** `/api/sports/:sportId` → Delete a sport (admin only)
-  - **POST** `/api/seasons` → Create a new season (admin only)
-  - **PUT** `/api/seasons/:seasonId` → Update a season (admin only)
-  - **DELETE** `/api/seasons/:seasonId` → Delete a season (admin only)
-  - **POST** `/api/fixtures` → Create a fixture
-  - **GET** `/api/fixtures` → Get all fixtures
-  - **PUT** `/api/fixtures/:id/confirm` → Confirm a fixture
-  - **PUT** `/api/fixtures/:id/result` → Submit a match result
-  - **POST** `/api/availability` → Mark availability
-  - **GET** `/api/fixtures/:id/availability` → Get team availability for a fixture
-  - **PUT** `/api/availability/:id` → Update availability
-  - **POST** `/api/fixtures/:id/teamsheet` → Submit a teamsheet
-  - **GET** `/api/fixtures/:id/teamsheet/:teamId` → Get a specific teamsheet
-  - **GET** `/api/fixtures/:id/teamsheets` → Get both teamsheets for a fixture
-  - **GET** `/api/leagues/:seasonId/:sportId` → Get league standings
-  - **GET** `/api/teams/:id/stats` → Get team stats
-  - **GET** `/api/players/:id/stats` → Get player stats
-  - **POST** `/api/notifications` → Create a notification (admin only)
-  - **GET** `/api/users/:id/notifications` → Get user's notifications
-  - **PUT** `/api/notifications/:id/read` → Mark notification as read
+- `GET /api/profile` — Get user profile
+- `POST /api/auth/logout` — Logout
+- `POST /api/teams` — Create team
+- `GET /api/teams/:teamId` — Team details
+- `GET /api/teams` — List teams
+- `PUT /api/teams/:teamId` — Update team
+- `POST /api/teams/:teamId/members` — Add player
+- `DELETE /api/teams/:teamId/:userId` — Remove player
+- `POST /api/teams/:teamId/requests` — Request to join team
+- `GET /api/teams/:teamId/requests/view` — View join requests
+- `POST /api/teams/:teamId/requests/:requestId/approve` — Approve join request
+- `POST /api/teams/:teamId/requests/:requestId/reject` — Reject join request
+- `POST /api/sports` — Create sport (admin)
+- `PUT /api/sports/:sportId` — Update sport (admin)
+- `DELETE /api/sports/:sportId` — Delete sport (admin)
+- `POST /api/seasons` — Create season (admin)
+- `PUT /api/seasons/:seasonId` — Update season (admin)
+- `DELETE /api/seasons/:seasonId` — Delete season (admin)
+- `POST /api/fixtures` — Create fixture
+- `GET /api/fixtures` — List fixtures
+- `PUT /api/fixtures/:id/confirm` — Confirm fixture
+- `PUT /api/fixtures/:id/result` — Submit result
+- `POST /api/availability` — Mark availability
+- `GET /api/fixtures/:id/availability` — Get team availability
+- `PUT /api/availability/:id` — Update availability
+- `POST /api/fixtures/:id/teamsheet` — Submit teamsheet
+- `GET /api/fixtures/:id/teamsheet/:teamId` — Get teamsheet
+- `GET /api/fixtures/:id/teamsheets` — Get both teamsheets
+- `GET /api/leagues/:seasonId/:sportId` — League standings
+- `GET /api/teams/:id/stats` — Team stats
+- `GET /api/players/:id/stats` — Player stats
+- `POST /api/notifications` — Create notification (admin)
+- `GET /api/users/:id/notifications` — Get notifications
+- `PUT /api/notifications/:id/read` — Mark notification as read
 
------
+---
 
 ## 🚀 Next Steps
 
-  - Develop frontend application using React and Tailwind CSS.
-  - Implement real-time features with WebSockets (e.g., live match updates, notifications).
-  - Expand on player and team statistics.
-  - Implement a more comprehensive notification system.
-  - Add features for tracking match events like goals, cards, and substitutions.
+- Complete frontend features and polish UI
+- Add real-time updates (WebSockets)
+- Expand statistics and match event tracking
+- Add mobile support
+- Enhance notification system
 
------
+---
 
 ## 📜 License
 
 MIT License
 
------
+---
 
 ## 👥 Contributors
 
-  - Alasdair Wood
+- Alasdair Wood
