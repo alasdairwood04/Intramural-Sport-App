@@ -1,4 +1,3 @@
-// alasdairwood04/intramural-sport-app/Intramural-Sport-App-99e1da5415a846419501e81dab912798cc11b8c9/client/src/features/auth/LoginForm.jsx
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -19,8 +18,13 @@ const LoginForm = () => {
   const onSubmit = async (data) => {
     setServerError('');
     try {
-      await login(data);
-      navigate('/dashboard');
+      const user = await login(data);
+      // Redirect based on user role from response
+      if (user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       setServerError(error.response?.data?.error || 'Invalid email or password.');
     }

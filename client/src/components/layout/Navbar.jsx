@@ -22,6 +22,9 @@ const Navbar = () => {
           <nav className="flex items-center space-x-4">
             {user ? (
               <>
+              {user.role === 'admin' && (
+                <Link to ="/admin/dashboard" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Admin Dashboard</Link>
+              )}
                 <span className="text-gray-700 hidden sm:block">
                   Welcome, {user.first_name}
                 </span>

@@ -8,6 +8,7 @@ import TeamDetailsPage from '../pages/TeamDetailsPage';
 import SeasonDetailsPage from '../pages/SeasonDetailsPage';
 import TeamsheetPage from '../pages/TeamsheetPage';
 import FixtureTeamsheetPage from '../pages/FixtureTeamsheetPage'; // Import the new page
+import AdminDashboardPage from '../pages/AdminDashboardPage';
 
 
 const AppRouter = () => {
@@ -24,7 +25,14 @@ const AppRouter = () => {
                 </ProtectedRoute>
             } 
             />
-
+            <Route
+                path="/admin/dashboard"
+                element={
+                    <ProtectedRoute>
+                        <AdminDashboardPage />
+                    </ProtectedRoute>
+                }
+            />
             <Route 
             path="/teams/:teamId"
             element={
