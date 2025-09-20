@@ -11,7 +11,7 @@ import FixtureTeamsheetPage from '../pages/FixtureTeamsheetPage';
 import AdminDashboardPage from '../pages/AdminDashboardPage';
 import ManageSportsPage from '../pages/ManageSportsPage';
 import ManageSeasonsPage from '../pages/ManageSeasonsPage';
-// import ManageUsersPage from '../pages/ManageUsersPage';
+import ManageUsersPage from '../pages/ManageUsersPage';
 import ManageTeamsPage from '../pages/ManageTeamsPage';
 import LoginHandler from '../components/LoginHandler'; // Import the LoginHandler
 
@@ -99,14 +99,14 @@ const AppRouter = () => {
                     </ProtectedRoute>
                 } 
             />
-            {/* <Route 
+            <Route 
                 path="/admin/manage-users" 
                 element={
                     <ProtectedRoute>
                         <ManageUsersPage />
                     </ProtectedRoute>
                 } 
-            /> */}
+            />
         </Routes>
     );
 };
