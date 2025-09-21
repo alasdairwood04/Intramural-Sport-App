@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
-import { createTeam, updateTeam } from '../../api/teamsApi';
+import { createTeam, updateTeam, getTeamById } from '../../api/teamsApi'; 
 import { getAllSports } from '../../api/sportsApi';
 import { getAllSeasons } from '../../api/seasonsApi';
 import Input from '../../components/common/Input';
@@ -10,30 +10,35 @@ import Select from '../../components/common/Select';
 const TeamForm = ({ team, onClose }) => {
     const [sports, setSports] = useState([]);
     const [seasons, setSeasons] = useState([]);
+    const [members, setMembers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [serverError, setServerError] = useState('');
     
-    // Use field names that match the API expectations
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
         defaultValues: {
             name: team?.name || '',
-            sportName: team?.sport_name || '',  // Changed from sport_id
-            seasonName: team?.season_name || '', // Changed from season_id
+            sportName: team?.sport_name || '',
+            seasonName: team?.season_name || '',
+            captain_id: team?.captain_id || '',
         }
     });
 
-    // Fetch sports and seasons on component mount
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
                 const [sportsResponse, seasonsResponse] = await Promise.all([
                     getAllSports(),
-                    getAllSeasons()
+                    getAllSeasons(),
                 ]);
                 
                 setSports(sportsResponse.data.data || []);
                 setSeasons(seasonsResponse.data.data || []);
+
+                if (team) {
+                    const teamDetailsResponse = await getTeamById(team.id);
+                    setMembers(teamDetailsResponse.data.data.members || []);
+                }
             } catch (error) {
                 console.error("Error fetching form data:", error);
                 setServerError("Failed to load form data. Please try again.");
@@ -43,12 +48,10 @@ const TeamForm = ({ team, onClose }) => {
         };
         
         fetchData();
-    }, []);
+    }, [team]);
 
     const onSubmit = async (data) => {
         try {
-            console.log("Submitting team data:", data);
-            
             if (team) {
                 await updateTeam(team.id, data);
             } else {
@@ -56,8 +59,6 @@ const TeamForm = ({ team, onClose }) => {
             }
             onClose();
         } catch (error) {
-            console.error('Error saving team:', error);
-            console.error('Error response:', error.response?.data);
             setServerError(error.response?.data?.message || 'Failed to save team.');
         }
     };
@@ -78,14 +79,14 @@ const TeamForm = ({ team, onClose }) => {
             
             <Select
                 label="Sport"
-                name="sportName"  // Changed from sport_id
+                name="sportName"
                 register={register}
                 errors={errors}
                 required
             >
                 <option value="">Select a sport</option>
                 {sports.map(sport => (
-                    <option key={sport.id} value={sport.name}>  {/* Use sport.name instead of sport.id */}
+                    <option key={sport.id} value={sport.name}>
                         {sport.name}
                     </option>
                 ))}
@@ -93,18 +94,35 @@ const TeamForm = ({ team, onClose }) => {
             
             <Select
                 label="Season"
-                name="seasonName"  // Changed from season_id
+                name="seasonName"
                 register={register}
                 errors={errors}
                 required
             >
                 <option value="">Select a season</option>
                 {seasons.map(season => (
-                    <option key={season.id} value={season.name}>  {/* Use season.name instead of season.id */}
+                    <option key={season.id} value={season.name}>
                         {season.name}
                     </option>
                 ))}
             </Select>
+
+            {team && (
+                 <Select
+                    label="Captain"
+                    name="captain_id"
+                    register={register}
+                    errors={errors}
+                    required
+                >
+                    <option value="">Select a captain</option>
+                    {members.map(member => (
+                        <option key={member.id} value={member.id}>
+                            {member.first_name} {member.last_name}
+                        </option>
+                    ))}
+                </Select>
+            )}
             
             {serverError && (
                 <div className="bg-red-50 p-3 rounded-md">
@@ -113,7 +131,7 @@ const TeamForm = ({ team, onClose }) => {
             )}
             
             <div className="flex justify-end space-x-2 pt-2">
-                <Button type="button" onClick={onClose}>Cancel</Button>
+                <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
                 <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? 'Saving...' : (team ? 'Update Team' : 'Create Team')}
                 </Button>

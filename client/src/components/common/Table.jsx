@@ -84,7 +84,7 @@ const Table = ({
                   onMouseLeave={() => setHoveredRow(null)}
                 >
                   {columns.map((column) => (
-                    <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm relative">
                       {column.render ? column.render(row, index) : (
                         <span className="text-neutral-900">
                           {row[column.key]}
@@ -121,7 +121,7 @@ export const ActionColumn = ({ actions = [], row, index }) => {
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-20">
+          <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-200">
             {actions.map((action, actionIndex) => (
               <button
                 key={actionIndex}

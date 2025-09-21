@@ -25,6 +25,9 @@ export const getTeamById = (teamId) => {
     return apiClient.get(`/teams/${teamId}`);
 };
 
+export const getTeamMembers = (teamId) => {
+    return apiClient.get(`/teams/${teamId}/members`);
+};
 
 // captains and admins can use these endpoints
 export const requestToJoin = (teamId) => {
