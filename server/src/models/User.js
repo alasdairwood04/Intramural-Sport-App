@@ -54,7 +54,7 @@ const User = {
 
     // Update user details
     async update(userId, updateData) {
-        const allowedFields = ['first_name', 'last_name', 'student_id', 'role'];
+        const allowedFields = ['first_name', 'last_name', 'student_id', 'role', 'email'];
         const fields = [];
         const values = [];
         let index = 1;

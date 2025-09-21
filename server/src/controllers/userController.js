@@ -18,9 +18,9 @@ exports.getCurrentUserProfile = async (req, res, next) => {
 exports.updateCurrentUserProfile = async (req, res, next) => {
     try {
         const userId = req.user.id;
-        const { firstName, lastName, email } = req.body;
+        const { first_name, last_name, email, student_id } = req.body;
 
-        const updatedUser = await User.update(userId, { firstName, lastName, email });
+        const updatedUser = await User.update(userId, { first_name, last_name, email, student_id });
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
