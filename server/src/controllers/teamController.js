@@ -205,5 +205,14 @@ exports.getMyTeams = async (req, res, next) => {
     }
 };
 
+exports.getTeamMembers = async (req, res, next) => {
+    try {
+        const teamId = req.params.teamId; // Get teamId from route parameters
+        const members = await Team.getTeamMembers(teamId);
+        res.status(200).json({ success: true, data: members });
+    } catch (error) {
+        next(error);
+    }
+};
 
 // delete a team (captain or admin only)

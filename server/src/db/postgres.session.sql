@@ -152,3 +152,11 @@ FROM fixtures f
 JOIN teams ht ON f.home_team_id = ht.id
 JOIN teams at ON f.away_team_id = at.id
 WHERE f.id = '26a87852-2238-4be6-a938-29bc82f11ff2';
+
+
+-- @block
+-- get members from team 7f5bf0b9-a1fb-421c-86b1-5bdde43cfe24
+SELECT u.id, u.first_name, u.last_name, u.email, tm.role
+FROM users u
+JOIN team_members tm ON u.id = tm.user_id
+WHERE tm.team_id = '7f5bf0b9-a1fb-421c-86b1-5bdde43cfe24';

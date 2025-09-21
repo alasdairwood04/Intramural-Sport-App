@@ -137,34 +137,77 @@ const Team = {
     return result.rows;
   },
 
-
-async updateTeam(teamId, updateData) {
-    // Define allowed fields to update
-    const allowedFields = ['name', 'description', 'logo_url', 'is_active'];
-    
-    const fields = [];
-    const values = [];
-    let index = 1;
-    
-    // Only process fields that are in the allowed list
-    for (const key in updateData) {
-      if (allowedFields.includes(key)) {
-        fields.push(`${key} = $${index}`);
-        values.push(updateData[key]);
-        index++;
-      }
-    }
-    
-    // If no valid fields to update, return the existing team
-    if (fields.length === 0) {
-      return await this.findById(teamId);
-    }
-    
-    values.push(teamId); // For the WHERE clause
-    const query = `UPDATE teams SET ${fields.join(', ')} WHERE id = $${index} RETURNING *;`;
-    const { rows } = await pool.query(query, values);
-    return rows[0];
+  async getTeamMembers(teamId) {
+    const { rows } = await pool.query(
+      `SELECT u.id, u.first_name, u.last_name, u.email, tm.role
+       FROM users u
+       JOIN team_members tm ON u.id = tm.user_id
+       WHERE tm.team_id = $1`,
+      [teamId]
+    );
+    return rows;
   },
+
+    async updateTeam(teamId, updateData) {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            const currentTeamRes = await client.query('SELECT captain_id FROM teams WHERE id = $1', [teamId]);
+            if (currentTeamRes.rows.length === 0) {
+                throw new Error('Team not found');
+            }
+            const oldCaptainId = currentTeamRes.rows[0].captain_id;
+
+            // Handle captain change logic
+            if (updateData.captain_id && updateData.captain_id !== oldCaptainId) {
+                // Demote old captain (if they exist)
+                if (oldCaptainId) {
+                    await client.query(
+                        `UPDATE team_members SET role = 'player' WHERE team_id = $1 AND user_id = $2`,
+                        [teamId, oldCaptainId]
+                    );
+                }
+                // Promote new captain
+                await client.query(
+                    `UPDATE team_members SET role = 'captain' WHERE team_id = $1 AND user_id = $2`,
+                    [teamId, updateData.captain_id]
+                );
+            }
+
+            const allowedFields = ['name', 'description', 'logo_url', 'is_active', 'captain_id'];
+            const fields = [];
+            const values = [];
+            let index = 1;
+            
+            for (const key in updateData) {
+              if (allowedFields.includes(key)) {
+                fields.push(`${key} = $${index}`);
+                values.push(updateData[key]);
+                index++;
+              }
+            }
+            
+            if (fields.length === 0) {
+              await client.query('COMMIT');
+              return await this.findById(teamId);
+            }
+            
+            values.push(teamId);
+            const query = `UPDATE teams SET ${fields.join(', ')} WHERE id = $${index} RETURNING *;`;
+            const { rows } = await client.query(query, values);
+            
+            await client.query('COMMIT');
+            return rows[0];
+
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Error updating team with captain change:', error);
+            throw error;
+        } finally {
+            client.release();
+        }
+    },
 
 
 

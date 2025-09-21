@@ -27,6 +27,9 @@ router.delete('/:teamId/:userId', isAuthenticated, isTeamCaptainOrAdmin, teamCon
 // DELETE /api/teams/:id (delete team)
 router.delete('/:teamId', isAuthenticated, isTeamCaptainOrAdmin, teamController.deleteTeam);
 
+// get all current members of a team
+router.get('/:teamId/members', isAuthenticated, teamController.getTeamMembers);
+
 
 // Player requests to join a team
 router.post('/:teamId/requests', isAuthenticated, teamController.requestToJoinTeam);

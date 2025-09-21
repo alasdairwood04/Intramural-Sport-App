@@ -1,7 +1,7 @@
 const Sport = require('../models/Sport');
 const Team = require('../models/Team');
 const User = require('../models/User');
-const Season = require('../models/season');
+const Season = require('../models/Season');
 
 // Controller functions for admin-related operations
 
