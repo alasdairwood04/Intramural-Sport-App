@@ -87,6 +87,20 @@ const User = {
     async delete(userId) {
         const { rowCount } = await pool.query("DELETE FROM users WHERE id = $1", [userId]);
         return rowCount > 0;
+    },
+
+    // Verify user's password
+    async verifyPassword(userId, password) {
+        const user = await this.findById(userId);
+        if (!user) return false;
+        return bcrypt.compare(password, user.password_hash);
+    },
+
+    // Update user's password
+    async updatePassword(userId, newPassword) {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const { rowCount } = await pool.query("UPDATE users SET password_hash = $1 WHERE id = $2", [hashedPassword, userId]);
+        return rowCount > 0;
     }
 };
 
