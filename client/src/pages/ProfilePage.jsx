@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { getUserTeams } from '../api/teamsApi';
-import { updateProfile, changePassword } from '../api/userApi'; // Assuming these API functions exist
+import { updateProfile, changePassword } from '../api/userApi';
 import Card, { StatsCard } from '../components/common/Card';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 
 const ProfilePage = () => {
-  const { user, updateUser } = useAuth();
+  const { user, setUser } = useAuth();
   const [userTeams, setUserTeams] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -248,7 +248,7 @@ const ProfilePage = () => {
         onClose={() => setIsEditModalOpen(false)}
         user={user}
         onSuccess={(updatedUser) => {
-          updateUser(updatedUser);
+          setUser(updatedUser); // Update the user in the AuthContext
           setSuccess('Profile updated successfully');
           setTimeout(() => setSuccess(null), 5000);
         }}

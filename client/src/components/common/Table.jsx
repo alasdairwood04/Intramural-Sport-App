@@ -121,7 +121,7 @@ export const ActionColumn = ({ actions = [], row, index }) => {
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-200">
+          <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-20">
             {actions.map((action, actionIndex) => (
               <button
                 key={actionIndex}
