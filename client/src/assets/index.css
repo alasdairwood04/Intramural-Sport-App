@@ -2,45 +2,201 @@
 
 @theme {
   /* --- FONTS --- */
-  /* This system font stack is perfect for a Notion-like UI, no changes needed. */
-  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 
-  /* --- COLORS (Notion-Inspired Palette) --- */
+  /* --- MODERN COLOR PALETTE --- */
+  
+  /* Neutral Scale - Clean Grays */
+  --color-neutral-50: #fafafa;    /* Page background */
+  --color-neutral-100: #f5f5f5;   /* Card backgrounds */
+  --color-neutral-200: #e5e5e5;   /* Subtle borders */
+  --color-neutral-300: #d4d4d4;   /* Input borders */
+  --color-neutral-400: #a3a3a3;   /* Placeholder text */
+  --color-neutral-500: #737373;   /* Secondary text */
+  --color-neutral-600: #525252;   /* Body text */
+  --color-neutral-700: #404040;   /* Headings */
+  --color-neutral-800: #262626;   /* High contrast text */
+  --color-neutral-900: #171717;   /* Primary text */
 
-  /* Primary Accent Color (e.g., for buttons, links) */
-  --color-primary-50: oklch(0.95 0.02 250);   /* Lightest Blue */
-  --color-primary-100: oklch(0.9 0.04 250);
-  --color-primary-200: oklch(0.85 0.06 250);
-  --color-primary-300: oklch(0.8 0.08 250);
-  --color-primary-400: oklch(0.7 0.1 250);
-  --color-primary-500: oklch(0.6 0.12 250);  /* Main Accent Blue */
-  --color-primary-600: oklch(0.55 0.13 250);
-  --color-primary-700: oklch(0.5 0.14 250);
-  --color-primary-800: oklch(0.45 0.12 250);
-  --color-primary-900: oklch(0.4 0.1 250);    /* Darkest Blue */
-
-  /* Neutral Gray Scale */
-  --color-gray-50: oklch(0.98 0.01 240);   /* Page background */
-  --color-gray-100: oklch(0.96 0.01 240);  /* Subtle backgrounds, borders */
-  --color-gray-200: oklch(0.92 0.01 240);  /* UI element borders */
-  --color-gray-300: oklch(0.88 0.01 240);  /* Hover states */
-  --color-gray-400: oklch(0.80 0.01 240);  /* Disabled text */
-  --color-gray-500: oklch(0.70 0.01 240);  /* Medium-emphasis text */
-  --color-gray-600: oklch(0.60 0.01 240);
-  --color-gray-700: oklch(0.50 0.01 240);
-  --color-gray-800: oklch(0.40 0.02 240);
-  --color-gray-900: oklch(0.30 0.02 240);  /* High-emphasis text */
+  /* Primary Brand Color - Modern Blue */
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;   /* Main brand color */
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
 
   /* Semantic Colors */
-  --color-danger: oklch(0.7 0.15 20);     /* Subtle Red for warnings */
-  --color-success: oklch(0.75 0.15 150);  /* Subtle Green for success */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+
+  /* --- SPACING SYSTEM --- */
+  --spacing-px: 1px;
+  --spacing-0: 0px;
+  --spacing-1: 4px;    /* 4px */
+  --spacing-2: 8px;    /* 8px */
+  --spacing-3: 12px;   /* 12px */
+  --spacing-4: 16px;   /* 16px */
+  --spacing-5: 20px;   /* 20px */
+  --spacing-6: 24px;   /* 24px */
+  --spacing-8: 32px;   /* 32px */
+  --spacing-10: 40px;  /* 40px */
+  --spacing-12: 48px;  /* 48px */
+  --spacing-16: 64px;  /* 64px */
+  --spacing-20: 80px;  /* 80px */
+  --spacing-24: 96px;  /* 96px */
+
+  /* --- BORDER RADIUS --- */
+  --radius-none: 0px;
+  --radius-sm: 4px;    /* Small elements */
+  --radius-md: 6px;    /* Default buttons/inputs */
+  --radius-lg: 8px;    /* Cards */
+  --radius-xl: 12px;   /* Larger cards */
+  --radius-2xl: 16px;  /* Modals */
+  --radius-full: 9999px; /* Pills/avatars */
 
   /* --- SHADOWS --- */
-  /* Very subtle shadows for a flat, clean look. */
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.06), 0 4px 6px -4px rgb(0 0 0 / 0.06);
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* --- TYPOGRAPHY SCALE --- */
+  --text-xs: 12px;     /* Fine print */
+  --text-sm: 14px;     /* Secondary text */
+  --text-base: 16px;   /* Body text */
+  --text-lg: 18px;     /* Large body */
+  --text-xl: 20px;     /* Small headings */
+  --text-2xl: 24px;    /* Section headings */
+  --text-3xl: 30px;    /* Page headings */
+  --text-4xl: 36px;    /* Large headings */
+
+  /* --- LINE HEIGHTS --- */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  /* --- FONT WEIGHTS --- */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+}
+
+/* --- MODERN COMPONENT STYLES --- */
+
+/* Glass morphism effect for modals/overlays */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Smooth focus states */
+.focus-ring {
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.focus-ring:focus {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Loading skeleton animation */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Status indicators */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-active { background-color: var(--color-success-500); }
+.status-pending { background-color: var(--color-warning-500); }
+.status-inactive { background-color: var(--color-neutral-400); }
+.status-error { background-color: var(--color-error-500); }
+
+/* Modern scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-neutral-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-300);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-400);
+}
+
+/* Selection styling */
+::selection {
+  background: var(--color-primary-100);
+  color: var(--color-primary-900);
+}
+
+/* Remove default button styles and add modern ones */
+button {
+  font-family: inherit;
+}
+
+/* Modern input styles */
+input, textarea, select {
+  font-family: inherit;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
