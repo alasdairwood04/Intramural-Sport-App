@@ -11,7 +11,10 @@ require('./config/passport')(passport);
 
 
 // --- Middleware --- 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+    origin: 'http://localhost:5173', // The origin of your frontend app
+    credentials: true // This allows the server to accept cookies from the client
+}));
 
 // body parsing middleware
 app.use(express.json({ limit: '10mb' })); // To handle JSON payloads
@@ -31,7 +34,9 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'defaultsecret', // Use a strong secret in production
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === 'production' } // Use secure cookies in production
+    cookie: { secure: process.env.NODE_ENV === 'production',
+    maxAge: 1000 * 60 * 60 * 24  // 1 day
+     } // Use secure cookies in production
 }));
 
 // Passport middleware
