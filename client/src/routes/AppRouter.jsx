@@ -15,6 +15,9 @@ import ManageUsersPage from '../pages/ManageUsersPage';
 import ManageTeamsPage from '../pages/ManageTeamsPage';
 import LoginHandler from '../components/LoginHandler'; // Import the LoginHandler
 import ProfilePage from '../pages/ProfilePage';
+import SettingsPage from '../pages/SettingsPage';
+import TeamsPage from '../pages/TeamsPage';
+import SeasonsPage from '../pages/SeasonsPage';
 
 const AppRouter = () => {
     return (
@@ -116,6 +119,24 @@ const AppRouter = () => {
                         <ProfilePage />
                     </ProtectedRoute>
                 } 
+            />
+
+            <Route
+                path="/settings"
+                element={
+                    <ProtectedRoute>
+                        <SettingsPage />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/teams"
+                element={<TeamsPage />}
+            />
+            <Route
+                path="/seasons"
+                element={<SeasonsPage />}
             />
         </Routes>
     );
